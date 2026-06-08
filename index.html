@@ -151,7 +151,7 @@
         }
 
         .conversation-list {
-            max-height: 200px;
+            max-height: 250px;
             overflow-y: auto;
         }
 
@@ -180,14 +180,16 @@
             white-space: nowrap;
         }
 
-        .convo-item .delete-convo {
+        /* 重命名输入框样式 */
+        .rename-input {
             background: rgba(255,255,255,0.2);
-            border: none;
-            padding: 4px 10px;
+            border: 1px solid rgba(255,255,255,0.5);
             border-radius: 20px;
-            font-size: 0.7rem;
-            cursor: pointer;
-            color: #ff6b6b;
+            padding: 6px 12px;
+            color: white;
+            font-size: 0.85rem;
+            flex: 1;
+            outline: none;
         }
 
         .api-input-group {
@@ -274,7 +276,7 @@
             text-align: center;
         }
 
-        /* 主界面头部 */
+        /* 主界面头部 - 极简 */
         .header {
             display: flex;
             justify-content: space-between;
@@ -384,7 +386,7 @@
             border-bottom-left-radius: 6px;
         }
 
-        /* ========== 表格样式优化 ========== */
+        /* 表格样式 */
         .assistant-message .bubble table {
             width: 100%;
             border-collapse: collapse;
@@ -394,7 +396,6 @@
             overflow: hidden;
             display: block;
             overflow-x: auto;
-            white-space: nowrap;
         }
 
         .assistant-message .bubble th,
@@ -430,13 +431,7 @@
             overflow-x: auto;
         }
 
-        .assistant-message .bubble ul, 
-        .assistant-message .bubble ol {
-            padding-left: 20px;
-            margin: 8px 0;
-        }
-
-        /* 输入区域 */
+        /* 极简输入区域 - 只保留上传文件 */
         .input-wrapper {
             position: relative;
             margin-top: 8px;
@@ -449,7 +444,7 @@
             background: rgba(255,255,255,0.15);
             backdrop-filter: blur(20px);
             border-radius: 44px;
-            padding: 6px 6px 6px 20px;
+            padding: 6px 6px 6px 16px;
             border: 1px solid rgba(255,255,255,0.3);
         }
 
@@ -467,13 +462,7 @@
             color: rgba(255,255,255,0.5);
         }
 
-        .input-actions {
-            display: flex;
-            gap: 4px;
-            align-items: center;
-        }
-
-        .icon-btn {
+        .upload-icon {
             background: rgba(255,255,255,0.15);
             border: none;
             padding: 8px 12px;
@@ -484,7 +473,7 @@
             transition: all 0.2s;
         }
 
-        .icon-btn:active {
+        .upload-icon:active {
             transform: scale(0.95);
         }
 
@@ -596,6 +585,17 @@
             </div>
         </div>
     </div>
+
+    <div class="sidebar-section">
+        <div class="sidebar-section-title" onclick="toggleSection('themeSection')">
+            🌓 深色模式 <span class="toggle-icon" id="themeIcon">▼</span>
+        </div>
+        <div class="sidebar-section-content" id="themeSection">
+            <div class="data-buttons">
+                <button class="data-btn" id="themeToggle">🌙 切换深色模式</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- 主界面 -->
@@ -605,22 +605,17 @@
             <button class="menu-btn" id="openSidebar">☰</button>
             <h1>DeepSeek AI</h1>
         </div>
-        <button class="menu-btn" id="themeToggle">🌙</button>
     </div>
 
     <div class="chat-box" id="chatBox">
         <div class="message assistant-message">
-            <div class="bubble">✨ 欢迎使用 DeepSeek AI！<br>📊 我支持生成表格，对比类问题会自动用表格呈现<br>📎 点击输入框左侧按钮上传文件<br>🎤 点击麦克风语音输入<br>🔑 点击左上角菜单设置 API Key</div>
+            <div class="bubble">✨ 欢迎使用 DeepSeek AI！<br>📊 我支持生成表格，对比类问题会自动用表格呈现<br>📎 点击输入框旁的📎上传文件<br>🔑 点击左上角菜单设置 API Key</div>
         </div>
     </div>
 
     <div class="input-wrapper">
         <div class="input-area">
-            <div class="input-actions">
-                <button class="icon-btn" id="uploadBtn" title="上传文件">📎</button>
-                <button class="icon-btn" id="clearFileBtn" title="清除附件">🗑️</button>
-                <button class="icon-btn" id="voiceBtn" title="语音输入">🎤</button>
-            </div>
+            <button class="upload-icon" id="uploadBtn" title="上传文件">📎</button>
             <input type="text" id="userInput" placeholder="输入消息..." disabled>
             <button class="send-btn" id="sendBtn" disabled>发送</button>
         </div>
@@ -675,8 +670,6 @@
     const statusDiv = document.getElementById('status');
     const costInfo = document.getElementById('costInfo');
     const uploadBtn = document.getElementById('uploadBtn');
-    const clearFileBtn = document.getElementById('clearFileBtn');
-    const voiceBtn = document.getElementById('voiceBtn');
     const fileIndicator = document.getElementById('fileIndicator');
     const themeToggle = document.getElementById('themeToggle');
     const openSidebar = document.getElementById('openSidebar');
@@ -723,12 +716,9 @@
         closeSidebarFunc();
     }
 
-    function deleteConversation(convoId, event) {
-        event.stopPropagation();
+    function deleteConversation(convoId) {
         if (Object.keys(conversations).length <= 1) {
-            conversations[convoId] = { id: convoId, title: '新对话', history: [], createdAt: Date.now() };
-            saveConversations();
-            renderConversationList();
+            showStatus('至少保留一个对话', true);
             return;
         }
         delete conversations[convoId];
@@ -740,16 +730,67 @@
         }
         saveConversations();
         renderConversationList();
+        showStatus('已删除对话');
     }
 
-    function updateConversationTitle() {
-        const firstUserMsg = conversationHistory.find(m => m.role === 'user');
-        if (firstUserMsg && conversations[currentConversationId]) {
-            let title = typeof firstUserMsg.content === 'string' ? firstUserMsg.content.slice(0, 20) : '新对话';
-            if (title.length > 20) title = title.slice(0, 17) + '...';
-            conversations[currentConversationId].title = title;
+    function renameConversation(convoId, newTitle) {
+        if (conversations[convoId] && newTitle && newTitle.trim()) {
+            conversations[convoId].title = newTitle.trim().slice(0, 30);
             saveConversations();
             renderConversationList();
+            showStatus('已重命名');
+        }
+    }
+
+    // 显示上下文菜单（手机长按 / 电脑右键）
+    function showContextMenu(event, convoId, currentTitle) {
+        event.preventDefault();
+        event.stopPropagation();
+        
+        const isMobile = 'ontouchstart' in window;
+        
+        if (isMobile) {
+            // 手机：弹出对话框选择操作
+            const action = confirm(`对话: ${currentTitle}\n\n确定要删除这个对话吗？\n(点"取消"可以重命名)`);
+            if (action) {
+                deleteConversation(convoId);
+            } else {
+                const newName = prompt('输入新名称:', currentTitle);
+                if (newName && newName.trim()) {
+                    renameConversation(convoId, newName);
+                }
+            }
+        } else {
+            // 电脑：右键菜单
+            const menu = document.createElement('div');
+            menu.style.cssText = `
+                position: fixed;
+                top: ${event.clientY}px;
+                left: ${event.clientX}px;
+                background: rgba(30,30,40,0.95);
+                backdrop-filter: blur(10px);
+                border-radius: 12px;
+                padding: 8px 0;
+                z-index: 10000;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+                min-width: 120px;
+            `;
+            menu.innerHTML = `
+                <div style="padding: 8px 16px; color: white; cursor: pointer; hover:background:rgba(255,255,255,0.1)" id="menuRename">✏️ 重命名</div>
+                <div style="padding: 8px 16px; color: #ff6b6b; cursor: pointer; hover:background:rgba(255,255,255,0.1)" id="menuDelete">🗑️ 删除</div>
+            `;
+            document.body.appendChild(menu);
+            
+            document.getElementById('menuRename').onclick = () => {
+                const newName = prompt('输入新名称:', currentTitle);
+                if (newName && newName.trim()) renameConversation(convoId, newName);
+                menu.remove();
+            };
+            document.getElementById('menuDelete').onclick = () => {
+                deleteConversation(convoId);
+                menu.remove();
+            };
+            document.body.onclick = () => menu.remove();
         }
     }
 
@@ -759,14 +800,33 @@
         convos.forEach(convo => {
             const div = document.createElement('div');
             div.className = 'convo-item' + (convo.id === currentConversationId ? ' active' : '');
-            div.innerHTML = `
-                <span class="convo-title">💬 ${convo.title}</span>
-                <button class="delete-convo">删除</button>
-            `;
-            div.addEventListener('click', () => switchConversation(convo.id));
-            div.querySelector('.delete-convo').addEventListener('click', (e) => deleteConversation(convo.id, e));
+            div.innerHTML = `<span class="convo-title">💬 ${escapeHtml(convo.title)}</span>`;
+            div.addEventListener('click', (e) => {
+                e.stopPropagation();
+                switchConversation(convo.id);
+            });
+            // 长按/右键显示菜单
+            div.addEventListener('contextmenu', (e) => showContextMenu(e, convo.id, convo.title));
+            let touchTimer = null;
+            div.addEventListener('touchstart', (e) => {
+                touchTimer = setTimeout(() => {
+                    showContextMenu(e, convo.id, convo.title);
+                }, 500);
+            });
+            div.addEventListener('touchend', () => {
+                if (touchTimer) clearTimeout(touchTimer);
+            });
+            div.addEventListener('touchmove', () => {
+                if (touchTimer) clearTimeout(touchTimer);
+            });
             conversationList.appendChild(div);
         });
+    }
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
     }
 
     function renderChatFromHistory() {
@@ -843,7 +903,6 @@
         }
     }
 
-    // ========== 核心修改：添加系统提示词，让AI更喜欢用表格 ==========
     async function callDeepSeekStream(userMessage) {
         if (!apiKey) { showStatus('请先设置API Key', true); return; }
         let userContent = [];
@@ -863,7 +922,6 @@
         const displayText = userMessage.trim() || (pendingFile ? `📎 [发送了文件]` : '');
         addUserMessageToUI(displayText, filePreview);
         
-        // 构建包含系统提示的消息数组
         const messagesWithSystem = [
             {
                 role: 'system',
@@ -944,6 +1002,17 @@
         }
     }
 
+    function updateConversationTitle() {
+        const firstUserMsg = conversationHistory.find(m => m.role === 'user');
+        if (firstUserMsg && conversations[currentConversationId]) {
+            let title = typeof firstUserMsg.content === 'string' ? firstUserMsg.content.slice(0, 20) : '新对话';
+            if (title.length > 20) title = title.slice(0, 17) + '...';
+            conversations[currentConversationId].title = title;
+            saveConversations();
+            renderConversationList();
+        }
+    }
+
     function sendMessage() {
         const msg = userInput.value.trim();
         if (!msg && !pendingFile) { showStatus('请输入消息或上传文件', true); return; }
@@ -994,27 +1063,6 @@
         };
         input.click();
     });
-    clearFileBtn.addEventListener('click', () => { pendingFile = null; updateFileIndicator(); showStatus('已清除附件'); });
-
-    // 语音
-    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        const recognition = new SpeechRecognition();
-        recognition.lang = 'zh-CN';
-        recognition.continuous = false;
-        voiceBtn.addEventListener('click', () => {
-            recognition.start();
-            showStatus('🎤 请说话...');
-        });
-        recognition.onresult = (event) => {
-            const text = event.results[0][0].transcript;
-            userInput.value = text;
-            showStatus('✅ 语音识别完成');
-        };
-        recognition.onerror = () => showStatus('语音识别失败', true);
-    } else {
-        voiceBtn.style.display = 'none';
-    }
 
     // 按钮事件
     saveKeyBtn.addEventListener('click', () => {
@@ -1137,10 +1185,10 @@
             body.style.background = 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)';
             body.style.backgroundSize = '400% 400%';
             body.style.animation = 'gradientShift 15s ease infinite';
-            themeToggle.innerHTML = '☀️';
+            themeToggle.innerHTML = '☀️ 切换浅色模式';
         } else {
             loadBackground();
-            themeToggle.innerHTML = '🌙';
+            themeToggle.innerHTML = '🌙 切换深色模式';
         }
     }
     themeToggle.addEventListener('click', toggleTheme);
