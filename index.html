@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>DeepSeek AI</title>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
@@ -26,16 +26,19 @@
             height: 0;
         }
 
-        /* ========== 禁止页面滚动/滑动乱动 ========== */
+        /* ========== 完全禁止滑动/滚动乱动 ========== */
         html, body {
             position: fixed;
             top: 0;
             left: 0;
+            right: 0;
+            bottom: 0;
             width: 100%;
             height: 100%;
             overflow: hidden;
             overscroll-behavior: none;
             -webkit-overflow-scrolling: touch;
+            touch-action: pan-y pinch-zoom;
         }
 
         body {
@@ -299,23 +302,42 @@
             align-items: center;
             gap: 12px;
             justify-content: space-between;
+            flex-wrap: wrap;
         }
         .font-size-row span {
             color: white;
             font-size: 12px;
+            min-width: 70px;
         }
-        .font-size-btn {
-            background: rgba(255,255,255,0.15);
-            border: 1px solid rgba(255,255,255,0.2);
-            padding: 6px 20px;
-            border-radius: 40px;
-            font-size: 13px;
-            color: white;
+        .font-size-slider {
+            flex: 1;
+            min-width: 120px;
+        }
+        input[type="range"] {
+            width: 100%;
+            height: 4px;
+            -webkit-appearance: none;
+            background: rgba(255,255,255,0.3);
+            border-radius: 2px;
+            outline: none;
+        }
+        input[type="range"]:focus {
+            outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: white;
             cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
         }
-        .font-size-btn.active {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border: none;
+        .font-size-value {
+            color: white;
+            font-size: 12px;
+            min-width: 35px;
+            text-align: center;
         }
         .color-row {
             display: flex;
@@ -731,7 +753,6 @@
         <button class="new-convo-btn" id="newConvoSidebar">➕ 新建对话</button>
     </div>
 
-    <!-- 历史对话 - 默认折叠 -->
     <div class="sidebar-section">
         <div class="sidebar-section-title" onclick="toggleSection('historySection')">
             📂 历史对话 <span class="toggle-icon" id="historyIcon">▶</span>
@@ -741,7 +762,6 @@
         </div>
     </div>
 
-    <!-- API 设置 - 默认折叠 -->
     <div class="sidebar-section">
         <div class="sidebar-section-title" onclick="toggleSection('apiSection')">
             🔑 API 设置 <span class="toggle-icon" id="apiIcon">▶</span>
@@ -757,7 +777,6 @@
         </div>
     </div>
 
-    <!-- 文字样式 - 默认折叠 -->
     <div class="sidebar-section">
         <div class="sidebar-section-title" onclick="toggleSection('fontSection')">
             🔤 文字样式 <span class="toggle-icon" id="fontIcon">▶</span>
@@ -766,11 +785,10 @@
             <div class="font-controls">
                 <div class="font-size-row">
                     <span>📏 文字大小</span>
-                    <div>
-                        <button class="font-size-btn" data-size="14">小</button>
-                        <button class="font-size-btn active" data-size="16">中</button>
-                        <button class="font-size-btn" data-size="18">大</button>
+                    <div class="font-size-slider">
+                        <input type="range" id="fontSizeSlider" min="12" max="24" step="1" value="16">
                     </div>
+                    <span class="font-size-value" id="fontSizeValue">16px</span>
                 </div>
                 <div class="color-row">
                     <span>🎨 AI文字颜色</span>
@@ -789,11 +807,18 @@
                     <div class="preset-color" style="background:#af52de;" data-user-color="#af52de"></div>
                     <input type="color" id="userColorPicker" class="custom-color-input" value="#667eea">
                 </div>
+                <div class="color-row">
+                    <span>✏️ 用户文字颜色</span>
+                    <div class="preset-color" style="background:#ffffff;" data-user-text-color="#ffffff"></div>
+                    <div class="preset-color" style="background:#f5f5dc;" data-user-text-color="#f5f5dc"></div>
+                    <div class="preset-color" style="background:#ffe4e1;" data-user-text-color="#ffe4e1"></div>
+                    <div class="preset-color" style="background:#e0ffff;" data-user-text-color="#e0ffff"></div>
+                    <input type="color" id="userTextColorPicker" class="custom-color-input" value="#ffffff">
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- 背景设置 - 默认折叠 -->
     <div class="sidebar-section">
         <div class="sidebar-section-title" onclick="toggleSection('bgSection')">
             🎨 背景设置 <span class="toggle-icon" id="bgIcon">▶</span>
@@ -808,7 +833,6 @@
         </div>
     </div>
 
-    <!-- 数据管理 - 默认折叠 -->
     <div class="sidebar-section">
         <div class="sidebar-section-title" onclick="toggleSection('dataSection')">
             💾 数据管理 <span class="toggle-icon" id="dataIcon">▶</span>
@@ -822,7 +846,6 @@
         </div>
     </div>
 
-    <!-- 深色模式 - 默认折叠 -->
     <div class="sidebar-section">
         <div class="sidebar-section-title" onclick="toggleSection('themeSection')">
             🌓 深色模式 <span class="toggle-icon" id="themeIcon">▶</span>
@@ -863,7 +886,6 @@
 </div>
 
 <script>
-    // 侧边栏折叠功能（默认全部折叠，点击展开）
     function toggleSection(sectionId) {
         const content = document.getElementById(sectionId);
         const icon = document.getElementById(sectionId + 'Icon');
@@ -920,19 +942,23 @@
     const chatTitle = document.getElementById('chatTitle');
 
     // 文字样式相关
-    const fontSizeBtns = document.querySelectorAll('.font-size-btn');
+    const fontSizeSlider = document.getElementById('fontSizeSlider');
+    const fontSizeValue = document.getElementById('fontSizeValue');
     const presetColors = document.querySelectorAll('.preset-color[data-color]');
     const presetUserColors = document.querySelectorAll('.preset-color[data-user-color]');
+    const presetUserTextColors = document.querySelectorAll('.preset-color[data-user-text-color]');
     const textColorPicker = document.getElementById('textColorPicker');
     const userColorPicker = document.getElementById('userColorPicker');
+    const userTextColorPicker = document.getElementById('userTextColorPicker');
 
     let currentFontSize = localStorage.getItem('font_size') || '16';
     let currentTextColor = localStorage.getItem('text_color') || '#ffffff';
     let currentUserColor = localStorage.getItem('user_color') || '#667eea';
+    let currentUserTextColor = localStorage.getItem('user_text_color') || '#ffffff';
 
     function hexToRgb(hex) {
         const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-        return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : '102,126,234';
+        return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : '255,255,255';
     }
 
     function applyFontStyles() {
@@ -946,7 +972,7 @@
         document.querySelectorAll('.user-message .bubble').forEach(bubble => {
             bubble.style.fontSize = currentFontSize + 'px';
             bubble.style.background = `rgba(${hexToRgb(currentUserColor)}, 0.7)`;
-            bubble.style.color = '#ffffff';
+            bubble.style.color = currentUserTextColor;
         });
     }
 
@@ -954,30 +980,36 @@
         localStorage.setItem('font_size', currentFontSize);
         localStorage.setItem('text_color', currentTextColor);
         localStorage.setItem('user_color', currentUserColor);
+        localStorage.setItem('user_text_color', currentUserTextColor);
     }
 
     function updateFontUI() {
-        fontSizeBtns.forEach(btn => {
-            btn.classList.toggle('active', btn.dataset.size === currentFontSize);
-        });
+        fontSizeSlider.value = currentFontSize;
+        fontSizeValue.textContent = currentFontSize + 'px';
         presetColors.forEach(btn => {
             btn.classList.toggle('active', btn.dataset.color === currentTextColor);
         });
         presetUserColors.forEach(btn => {
             btn.classList.toggle('active', btn.dataset.userColor === currentUserColor);
         });
+        presetUserTextColors.forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.userTextColor === currentUserTextColor);
+        });
         textColorPicker.value = currentTextColor;
         userColorPicker.value = currentUserColor;
+        userTextColorPicker.value = currentUserTextColor;
     }
 
-    fontSizeBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            currentFontSize = btn.dataset.size;
-            saveFontSettings();
-            applyFontStyles();
-            updateFontUI();
-        });
+    // 文字大小滑块
+    fontSizeSlider.addEventListener('input', (e) => {
+        currentFontSize = e.target.value;
+        fontSizeValue.textContent = currentFontSize + 'px';
+        saveFontSettings();
+        applyFontStyles();
+        updateFontUI();
     });
+
+    // AI文字颜色预设
     presetColors.forEach(btn => {
         btn.addEventListener('click', () => {
             currentTextColor = btn.dataset.color;
@@ -986,6 +1018,8 @@
             updateFontUI();
         });
     });
+
+    // 用户气泡颜色预设
     presetUserColors.forEach(btn => {
         btn.addEventListener('click', () => {
             currentUserColor = btn.dataset.userColor;
@@ -994,14 +1028,36 @@
             updateFontUI();
         });
     });
+
+    // 用户文字颜色预设
+    presetUserTextColors.forEach(btn => {
+        btn.addEventListener('click', () => {
+            currentUserTextColor = btn.dataset.userTextColor;
+            saveFontSettings();
+            applyFontStyles();
+            updateFontUI();
+        });
+    });
+
+    // 自定义AI颜色
     textColorPicker.addEventListener('change', (e) => {
         currentTextColor = e.target.value;
         saveFontSettings();
         applyFontStyles();
         updateFontUI();
     });
+
+    // 自定义用户气泡颜色
     userColorPicker.addEventListener('change', (e) => {
         currentUserColor = e.target.value;
+        saveFontSettings();
+        applyFontStyles();
+        updateFontUI();
+    });
+
+    // 自定义用户文字颜色
+    userTextColorPicker.addEventListener('change', (e) => {
+        currentUserTextColor = e.target.value;
         saveFontSettings();
         applyFontStyles();
         updateFontUI();
@@ -1145,7 +1201,12 @@
         });
     }
 
-    function escapeHtml(text) { return text.replace(/[&<>]/g, function(m) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m]; }); }
+    function escapeHtml(text) { 
+        if (!text) return '';
+        return text.replace(/[&<>]/g, function(m) { 
+            return { '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m]; 
+        }); 
+    }
 
     function renderChatFromHistory() {
         chatBox.innerHTML = '';
@@ -1155,14 +1216,12 @@
         }
         conversationHistory.forEach(msg => {
             if (msg.role === 'user') {
-                // 获取用户消息的实际内容
                 let userText = '';
                 if (typeof msg.content === 'string') {
                     userText = msg.content;
                 } else if (Array.isArray(msg.content)) {
-                    // 多模态内容，提取文本部分
                     const textPart = msg.content.find(c => c.type === 'text');
-                    userText = textPart ? textPart.text : '[文件]';
+                    userText = textPart ? textPart.text : '';
                 }
                 addUserMessageToUI(userText || '');
             } else if (msg.role === 'assistant') {
@@ -1174,13 +1233,12 @@
     function addUserMessageToUI(content, filePreview = '') {
         const div = document.createElement('div'); div.className = 'message user-message';
         const bubble = document.createElement('div'); bubble.className = 'bubble';
-        // 确保显示用户实际输入的内容，不是占位符
         const displayContent = content || (filePreview ? `📎 ${filePreview}` : '');
         bubble.innerText = displayContent;
         bubble.style.fontSize = currentFontSize + 'px';
         bubble.style.background = `rgba(${hexToRgb(currentUserColor)}, 0.7)`;
+        bubble.style.color = currentUserTextColor;
         if (filePreview && !content) {
-            // 如果只有文件没有文字，在气泡内显示文件信息
             const span = document.createElement('div');
             span.style.cssText = 'font-size:10px; opacity:0.7; margin-top:5px;';
             span.innerText = filePreview;
@@ -1287,7 +1345,6 @@
         }
         if (!userContent.length) { showStatus('请输入消息或上传文件', true); return; }
         
-        // 显示用户消息：优先显示用户输入的文字，如果没有文字则显示文件信息
         const displayText = userText || (pendingFile ? `📎 ${pendingFile.filename}` : '');
         addUserMessageToUI(displayText, userText ? filePreview : '');
         
@@ -1478,6 +1535,7 @@
         currentFontSize = localStorage.getItem('font_size') || '16';
         currentTextColor = localStorage.getItem('text_color') || '#ffffff';
         currentUserColor = localStorage.getItem('user_color') || '#667eea';
+        currentUserTextColor = localStorage.getItem('user_text_color') || '#ffffff';
         applyFontStyles();
         updateFontUI();
     }
