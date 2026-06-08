@@ -17,8 +17,7 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
             min-height: 100vh;
-            height: 100vh;
-            overflow: hidden;
+            padding: 0;
             position: relative;
             transition: background 0.3s ease;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%);
@@ -39,35 +38,16 @@
             background-attachment: fixed !important;
         }
 
-        /* 主容器 - 完全贴合屏幕 */
         .container {
+            max-width: 800px;
+            margin: 0 auto;
             width: 100%;
             height: 100vh;
             display: flex;
             flex-direction: column;
             position: relative;
             z-index: 1;
-            padding: 0;
-            margin: 0;
-        }
-
-        /* 为有刘海/动态岛的手机留出安全区，但保持全屏 */
-        @supports (padding-top: env(safe-area-inset-top)) {
-            .container {
-                padding-top: env(safe-area-inset-top);
-                padding-bottom: env(safe-area-inset-bottom);
-                padding-left: env(safe-area-inset-left);
-                padding-right: env(safe-area-inset-right);
-            }
-        }
-
-        /* 内容区域 - 弹性填充 */
-        .content-wrapper {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            padding: 12px 16px 16px 16px;
-            overflow: hidden;
+            padding: 12px;
         }
 
         /* ========== 侧边栏菜单 ========== */
@@ -94,7 +74,7 @@
             top: 0;
             left: -85%;
             width: 85%;
-            max-width: 320px;
+            max-width: 340px;
             height: 100%;
             background: rgba(20,20,35,0.96);
             backdrop-filter: blur(20px);
@@ -285,7 +265,7 @@
             text-align: center;
         }
 
-        /* 主界面头部 - 极简 + 动态标题 */
+        /* 主界面头部 */
         .header {
             display: flex;
             justify-content: space-between;
@@ -319,18 +299,18 @@
             flex-shrink: 0;
         }
 
-        .page-title {
-            font-size: 1.1rem;
-            font-weight: 600;
+        .chat-title {
+            font-size: 1rem;
+            font-weight: 500;
             color: white;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            text-shadow: 0 1px 5px rgba(0,0,0,0.2);
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
             flex: 1;
         }
 
-        /* 聊天区域 - 弹性滚动 */
+        /* 聊天区域 */
         .chat-box {
             flex: 1;
             overflow-y: auto;
@@ -338,6 +318,7 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
+            min-height: 0;
         }
 
         .chat-box::-webkit-scrollbar {
@@ -356,13 +337,13 @@
 
         .message {
             display: flex;
-            animation: slideUp 0.3s ease-out;
+            animation: slideUp 0.25s ease-out;
         }
 
         @keyframes slideUp {
             from {
                 opacity: 0;
-                transform: translateY(15px);
+                transform: translateY(10px);
             }
             to {
                 opacity: 1;
@@ -381,7 +362,7 @@
         .bubble {
             max-width: 85%;
             padding: 10px 16px;
-            border-radius: 24px;
+            border-radius: 22px;
             font-size: 15px;
             line-height: 1.45;
             word-wrap: break-word;
@@ -389,10 +370,12 @@
         }
 
         .user-message .bubble {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: rgba(102,126,234,0.7);
+            backdrop-filter: blur(20px);
             color: white;
-            border-bottom-right-radius: 6px;
-            box-shadow: 0 4px 15px rgba(102,126,234,0.3);
+            border-bottom-right-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.2);
         }
 
         .assistant-message .bubble {
@@ -400,7 +383,7 @@
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255,255,255,0.2);
             color: white;
-            border-bottom-left-radius: 6px;
+            border-bottom-left-radius: 4px;
         }
 
         /* 表格样式 */
@@ -409,7 +392,7 @@
             border-collapse: collapse;
             margin: 10px 0;
             font-size: 12px;
-            border-radius: 12px;
+            border-radius: 10px;
             overflow: hidden;
             display: block;
             overflow-x: auto;
@@ -431,22 +414,23 @@
             background: rgba(255,255,255,0.05);
         }
 
+        .assistant-message .bubble pre {
+            background: rgba(0,0,0,0.4);
+            border-radius: 10px;
+            padding: 10px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+
         .assistant-message .bubble code {
             font-family: monospace;
             font-size: 12px;
         }
 
-        .assistant-message .bubble pre {
-            background: rgba(0,0,0,0.4);
-            border-radius: 12px;
-            padding: 10px;
-            overflow-x: auto;
-        }
-
-        /* 极简输入区域 */
+        /* 输入区域 - 毛玻璃 */
         .input-wrapper {
-            flex-shrink: 0;
             margin-top: 8px;
+            flex-shrink: 0;
         }
 
         .input-area {
@@ -456,7 +440,7 @@
             background: rgba(255,255,255,0.15);
             backdrop-filter: blur(20px);
             border-radius: 44px;
-            padding: 6px 6px 6px 16px;
+            padding: 5px 5px 5px 16px;
             border: 1px solid rgba(255,255,255,0.3);
         }
 
@@ -464,7 +448,7 @@
             flex: 1;
             background: transparent;
             border: none;
-            padding: 11px 0;
+            padding: 12px 0;
             font-size: 16px;
             color: white;
             outline: none;
@@ -474,20 +458,25 @@
             color: rgba(255,255,255,0.5);
         }
 
-        .upload-icon {
+        .plus-btn {
             background: rgba(255,255,255,0.15);
             border: none;
-            padding: 8px 12px;
+            width: 40px;
+            height: 40px;
             border-radius: 30px;
-            font-size: 1.1rem;
+            font-size: 1.4rem;
+            font-weight: 500;
             cursor: pointer;
             color: white;
             transition: all 0.2s;
-            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .upload-icon:active {
-            transform: scale(0.95);
+        .plus-btn:active {
+            transform: scale(0.92);
+            background: rgba(255,255,255,0.25);
         }
 
         .send-btn {
@@ -499,7 +488,6 @@
             font-weight: 600;
             color: white;
             cursor: pointer;
-            flex-shrink: 0;
         }
 
         .send-btn:active {
@@ -530,6 +518,60 @@
             color: rgba(255,255,255,0.7);
             margin-top: 4px;
             padding-left: 12px;
+        }
+
+        /* 弹出菜单 */
+        .popup-menu {
+            position: fixed;
+            background: rgba(30,30,45,0.96);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            overflow: hidden;
+            z-index: 10000;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.2);
+            animation: popupFade 0.15s ease-out;
+        }
+
+        @keyframes popupFade {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .popup-menu-item {
+            padding: 14px 20px;
+            color: white;
+            font-size: 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: background 0.2s;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .popup-menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .popup-menu-item:active {
+            background: rgba(255,255,255,0.15);
+        }
+
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            background: transparent;
         }
     </style>
 </head>
@@ -614,31 +656,29 @@
 
 <!-- 主界面 -->
 <div class="container">
-    <div class="content-wrapper">
-        <div class="header">
-            <div class="header-left">
-                <button class="menu-btn" id="openSidebar">☰</button>
-                <span class="page-title" id="pageTitle">DeepSeek AI</span>
-            </div>
+    <div class="header">
+        <div class="header-left">
+            <button class="menu-btn" id="openSidebar">☰</button>
+            <span class="chat-title" id="chatTitle">DeepSeek AI</span>
         </div>
-
-        <div class="chat-box" id="chatBox">
-            <div class="message assistant-message">
-                <div class="bubble">✨ 欢迎使用 DeepSeek AI！<br>📊 我支持生成表格，对比类问题会自动用表格呈现<br>📎 点击输入框旁的📎上传文件<br>🔑 点击左上角菜单设置 API Key</div>
-            </div>
-        </div>
-
-        <div class="input-wrapper">
-            <div class="input-area">
-                <button class="upload-icon" id="uploadBtn" title="上传文件">📎</button>
-                <input type="text" id="userInput" placeholder="输入消息..." disabled>
-                <button class="send-btn" id="sendBtn" disabled>发送</button>
-            </div>
-            <div class="file-indicator" id="fileIndicator"></div>
-        </div>
-        <div class="status" id="status"></div>
-        <div class="cost" id="costInfo"></div>
     </div>
+
+    <div class="chat-box" id="chatBox">
+        <div class="message assistant-message">
+            <div class="bubble">✨ 欢迎使用 DeepSeek AI！<br>📊 我支持生成表格，对比类问题会自动用表格呈现<br>➕ 点击输入框旁的+号上传文件<br>🔑 点击左上角菜单设置 API Key</div>
+        </div>
+    </div>
+
+    <div class="input-wrapper">
+        <div class="input-area">
+            <button class="plus-btn" id="plusBtn">+</button>
+            <input type="text" id="userInput" placeholder="输入消息..." disabled>
+            <button class="send-btn" id="sendBtn" disabled>发送</button>
+        </div>
+        <div class="file-indicator" id="fileIndicator"></div>
+    </div>
+    <div class="status" id="status"></div>
+    <div class="cost" id="costInfo"></div>
 </div>
 
 <script>
@@ -667,14 +707,14 @@
             id: currentConversationId,
             title: '新对话',
             history: [],
-            createdAt: Date.now()
+            createdAt: Date.now(),
+            titleGenerated: false
         };
         saveConversations();
     }
     let conversationHistory = conversations[currentConversationId].history;
 
     // DOM
-    const pageTitle = document.getElementById('pageTitle');
     const apiKeyInput = document.getElementById('apiKey');
     const saveKeyBtn = document.getElementById('saveKeyBtn');
     const clearChatBtn = document.getElementById('clearChatBtn');
@@ -686,7 +726,6 @@
     const sendBtn = document.getElementById('sendBtn');
     const statusDiv = document.getElementById('status');
     const costInfo = document.getElementById('costInfo');
-    const uploadBtn = document.getElementById('uploadBtn');
     const fileIndicator = document.getElementById('fileIndicator');
     const themeToggle = document.getElementById('themeToggle');
     const openSidebar = document.getElementById('openSidebar');
@@ -695,13 +734,8 @@
     const menuOverlay = document.getElementById('menuOverlay');
     const conversationList = document.getElementById('conversationList');
     const newConvoSidebar = document.getElementById('newConvoSidebar');
-
-    // 更新顶部标题
-    function updatePageTitle() {
-        const currentTitle = conversations[currentConversationId]?.title || 'DeepSeek AI';
-        pageTitle.textContent = currentTitle;
-        document.title = `${currentTitle} - DeepSeek`;
-    }
+    const plusBtn = document.getElementById('plusBtn');
+    const chatTitle = document.getElementById('chatTitle');
 
     function openSidebarFunc() { sidebar.classList.add('open'); menuOverlay.classList.add('open'); }
     function closeSidebarFunc() { sidebar.classList.remove('open'); menuOverlay.classList.remove('open'); }
@@ -714,13 +748,78 @@
         localStorage.setItem('current_conversation_id', currentConversationId);
     }
 
+    function updateHeaderTitle() {
+        if (conversations[currentConversationId]) {
+            chatTitle.textContent = conversations[currentConversationId].title;
+        } else {
+            chatTitle.textContent = 'DeepSeek AI';
+        }
+    }
+
+    // 自动生成标题（调用AI）
+    async function autoGenerateTitle(userMessage, aiResponse) {
+        if (conversations[currentConversationId].titleGenerated) return;
+        if (!apiKey) return;
+        
+        // 使用用户消息和AI回复的前100字来生成标题
+        const textToSummarize = (userMessage + ' ' + (aiResponse || '')).slice(0, 200);
+        if (textToSummarize.length < 5) return;
+        
+        try {
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+                body: JSON.stringify({
+                    model: 'deepseek-chat',
+                    messages: [
+                        {
+                            role: 'system',
+                            content: '你是一个标题生成助手。根据下面的对话内容，生成一个简短的标题（3-8个字）。只输出标题，不要输出其他任何内容。'
+                        },
+                        {
+                            role: 'user',
+                            content: `对话内容：${textToSummarize}\n\n生成标题：`
+                        }
+                    ],
+                    stream: false
+                })
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                let newTitle = data.choices[0].message.content.trim();
+                // 清理标题，限制长度
+                newTitle = newTitle.replace(/["'\s]+/g, '').slice(0, 20);
+                if (newTitle && newTitle.length > 0) {
+                    conversations[currentConversationId].title = newTitle;
+                    conversations[currentConversationId].titleGenerated = true;
+                    saveConversations();
+                    renderConversationList();
+                    updateHeaderTitle();
+                    showStatus(`📝 标题已生成: ${newTitle}`);
+                }
+            }
+        } catch (err) {
+            console.log('自动生成标题失败:', err);
+            // 失败时使用用户消息前几个字作为备用标题
+            const fallbackTitle = userMessage.slice(0, 12) + (userMessage.length > 12 ? '...' : '');
+            if (fallbackTitle && !conversations[currentConversationId].titleGenerated) {
+                conversations[currentConversationId].title = fallbackTitle || '新对话';
+                conversations[currentConversationId].titleGenerated = true;
+                saveConversations();
+                renderConversationList();
+                updateHeaderTitle();
+            }
+        }
+    }
+
     function switchConversation(convoId) {
         if (!conversations[convoId]) return;
         currentConversationId = convoId;
         conversationHistory = conversations[convoId].history;
         saveConversations();
         renderChatFromHistory();
-        updatePageTitle();
+        updateHeaderTitle();
         closeSidebarFunc();
         renderConversationList();
     }
@@ -729,15 +828,16 @@
         const newId = Date.now().toString();
         conversations[newId] = {
             id: newId,
-            title: `新对话 ${Object.keys(conversations).length + 1}`,
+            title: '新对话',
             history: [],
-            createdAt: Date.now()
+            createdAt: Date.now(),
+            titleGenerated: false
         };
         currentConversationId = newId;
         conversationHistory = [];
         saveConversations();
         renderChatFromHistory();
-        updatePageTitle();
+        updateHeaderTitle();
         renderConversationList();
         closeSidebarFunc();
     }
@@ -753,7 +853,7 @@
             currentConversationId = firstId;
             conversationHistory = conversations[firstId].history;
             renderChatFromHistory();
-            updatePageTitle();
+            updateHeaderTitle();
         }
         saveConversations();
         renderConversationList();
@@ -763,16 +863,16 @@
     function renameConversation(convoId, newTitle) {
         if (conversations[convoId] && newTitle && newTitle.trim()) {
             conversations[convoId].title = newTitle.trim().slice(0, 25);
+            conversations[convoId].titleGenerated = true;
             saveConversations();
             renderConversationList();
-            if (convoId === currentConversationId) {
-                updatePageTitle();
+            if (currentConversationId === convoId) {
+                updateHeaderTitle();
             }
             showStatus('已重命名');
         }
     }
 
-    // 显示上下文菜单
     function showContextMenu(event, convoId, currentTitle) {
         event.preventDefault();
         event.stopPropagation();
@@ -818,7 +918,8 @@
                 deleteConversation(convoId);
                 menu.remove();
             };
-            document.body.onclick = () => menu.remove();
+            const closeMenu = () => menu.remove();
+            setTimeout(() => document.addEventListener('click', closeMenu, { once: true }), 100);
         }
     }
 
@@ -884,7 +985,7 @@
         bubble.innerText = content;
         if (filePreview) {
             const span = document.createElement('div');
-            span.style.cssText = 'font-size:11px; opacity:0.7; margin-top:6px;';
+            span.style.cssText = 'font-size:10px; opacity:0.7; margin-top:5px;';
             span.innerText = filePreview;
             bubble.appendChild(span);
         }
@@ -930,6 +1031,87 @@
         }
     }
 
+    function showUploadMenu() {
+        const rect = plusBtn.getBoundingClientRect();
+        const menu = document.createElement('div');
+        menu.className = 'popup-menu';
+        menu.style.bottom = window.innerHeight - rect.top + 10 + 'px';
+        menu.style.left = rect.left + 'px';
+        menu.style.transformOrigin = 'bottom left';
+        menu.innerHTML = `
+            <div class="popup-menu-item" data-type="image">
+                <span class="emoji">🖼️</span> 上传图片
+            </div>
+            <div class="popup-menu-item" data-type="file">
+                <span class="emoji">📄</span> 上传文件
+            </div>
+        `;
+        
+        const overlay = document.createElement('div');
+        overlay.className = 'popup-overlay';
+        
+        const closeMenu = () => {
+            menu.remove();
+            overlay.remove();
+        };
+        
+        overlay.onclick = closeMenu;
+        
+        menu.querySelector('[data-type="image"]').onclick = () => {
+            closeMenu();
+            triggerFileUpload('image');
+        };
+        menu.querySelector('[data-type="file"]').onclick = () => {
+            closeMenu();
+            triggerFileUpload('file');
+        };
+        
+        document.body.appendChild(overlay);
+        document.body.appendChild(menu);
+    }
+    
+    function triggerFileUpload(type) {
+        if (!apiKey) { showStatus('请先保存API Key', true); return; }
+        const input = document.createElement('input');
+        input.type = 'file';
+        if (type === 'image') {
+            input.accept = 'image/*';
+        } else {
+            input.accept = 'image/*,text/plain';
+        }
+        input.onchange = async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            if (file.size > 5*1024*1024) { showStatus('文件超过5MB', true); return; }
+            
+            const isImage = file.type.startsWith('image/');
+            const isText = file.type === 'text/plain' || file.name.endsWith('.txt');
+            
+            if (!isImage && !isText) {
+                showStatus('请上传图片或txt文件', true);
+                return;
+            }
+            
+            showStatus(`📂 读取 ${file.name}...`);
+            try {
+                if (isImage) {
+                    const base64 = await readFileAsBase64(file);
+                    pendingFile = { type: 'image', data: base64, filename: file.name };
+                    showStatus(`✅ 已添加图片: ${file.name}`);
+                } else if (isText) {
+                    const text = await readFileAsText(file);
+                    if (text.length > 8000) { showStatus('文本太长，请缩减', true); return; }
+                    pendingFile = { type: 'text', content: text, filename: file.name };
+                    showStatus(`✅ 已添加文本: ${file.name}`);
+                }
+                updateFileIndicator();
+            } catch(err) { showStatus(`失败: ${err.message}`, true); }
+        };
+        input.click();
+    }
+    
+    plusBtn.addEventListener('click', showUploadMenu);
+
     async function callDeepSeekStream(userMessage) {
         if (!apiKey) { showStatus('请先设置API Key', true); return; }
         let userContent = [];
@@ -960,9 +1142,6 @@
         
         conversationHistory.push({ role: 'user', content: userContent });
         saveCurrentConversation();
-        updateConversationTitle();
-        renderConversationList();
-        updatePageTitle();
 
         const assistantDiv = document.createElement('div');
         assistantDiv.className = 'message assistant-message';
@@ -1020,6 +1199,13 @@
             costInfo.innerText = `💰 本次约 ¥${estimateCost}`;
             pendingFile = null;
             updateFileIndicator();
+            
+            // 自动生成标题（只在第一次对话时）
+            if (!conversations[currentConversationId].titleGenerated && userMessage) {
+                await autoGenerateTitle(userMessage, streamContent);
+                renderConversationList();
+            }
+            
         } catch (err) {
             currentAssistantMessageDiv.innerText = `❌ 错误: ${err.message}`;
             showStatus(err.message, true);
@@ -1030,21 +1216,6 @@
         }
     }
 
-    function updateConversationTitle() {
-        const firstUserMsg = conversationHistory.find(m => m.role === 'user');
-        if (firstUserMsg && conversations[currentConversationId]) {
-            let title = typeof firstUserMsg.content === 'string' ? firstUserMsg.content.slice(0, 20) : '新对话';
-            if (title.length > 20) title = title.slice(0, 17) + '...';
-            if (title === '新对话' && conversations[currentConversationId].title !== '新对话') {
-                // 保留用户自定义的名称
-                return;
-            }
-            conversations[currentConversationId].title = title;
-            saveConversations();
-            renderConversationList();
-        }
-    }
-
     function sendMessage() {
         const msg = userInput.value.trim();
         if (!msg && !pendingFile) { showStatus('请输入消息或上传文件', true); return; }
@@ -1052,7 +1223,6 @@
         callDeepSeekStream(msg);
     }
 
-    // 文件上传
     function readFileAsBase64(file) {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -1069,32 +1239,6 @@
             reader.readAsText(file, 'UTF-8');
         });
     }
-    uploadBtn.addEventListener('click', () => {
-        if (!apiKey) { showStatus('请先保存API Key', true); return; }
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.accept = 'image/*,text/plain';
-        input.onchange = async (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-            if (file.size > 5*1024*1024) { showStatus('文件超过5MB', true); return; }
-            showStatus(`📂 读取 ${file.name}...`);
-            try {
-                if (file.type.startsWith('image/')) {
-                    const base64 = await readFileAsBase64(file);
-                    pendingFile = { type: 'image', data: base64, filename: file.name };
-                    showStatus(`✅ 已添加图片: ${file.name}`);
-                } else if (file.type === 'text/plain' || file.name.endsWith('.txt')) {
-                    const text = await readFileAsText(file);
-                    if (text.length > 8000) { showStatus('文本太长，请缩减', true); return; }
-                    pendingFile = { type: 'text', content: text, filename: file.name };
-                    showStatus(`✅ 已添加文本: ${file.name}`);
-                } else { showStatus('只支持图片或.txt', true); }
-                updateFileIndicator();
-            } catch(err) { showStatus(`失败: ${err.message}`, true); }
-        };
-        input.click();
-    });
 
     // 按钮事件
     saveKeyBtn.addEventListener('click', () => {
@@ -1148,8 +1292,6 @@
                         conversationHistory = imported;
                         saveCurrentConversation();
                         renderChatFromHistory();
-                        updateConversationTitle();
-                        updatePageTitle();
                         showStatus('✅ 导入成功');
                     } else throw new Error();
                 } catch(err) { showStatus('文件格式错误', true); }
@@ -1236,7 +1378,7 @@
         loadBackground();
         renderChatFromHistory();
         renderConversationList();
-        updatePageTitle();
+        updateHeaderTitle();
     }
     init();
 </script>
