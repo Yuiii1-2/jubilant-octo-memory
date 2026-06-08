@@ -14,38 +14,11 @@
             box-sizing: border-box;
         }
 
-        /* ========== 全局滚动条样式 - 隐藏粗滑块 ========== */
-        * {
-            scrollbar-width: thin;
-            scrollbar-color: rgba(255,255,255,0.3) transparent;
-        }
-
-        ::-webkit-scrollbar {
-            width: 4px;
-            height: 4px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: transparent;
-            border-radius: 10px;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: rgba(255,255,255,0.3);
-            border-radius: 10px;
-            transition: background 0.2s;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(255,255,255,0.5);
-        }
-
         body {
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
             min-height: 100vh;
             padding: 0;
             position: relative;
-            transition: background 0.3s ease;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%);
             background-size: 400% 400%;
             animation: gradientShift 15s ease infinite;
@@ -64,6 +37,18 @@
             background-attachment: fixed !important;
         }
 
+        /* 隐藏滚动条但保留滚动功能 */
+        .chat-box::-webkit-scrollbar,
+        .conversation-list::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .chat-box,
+        .conversation-list {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
         .container {
             max-width: 800px;
             margin: 0 auto;
@@ -76,14 +61,14 @@
             padding: 12px;
         }
 
-        /* ========== 侧边栏菜单 ========== */
+        /* ========== 侧边栏（右侧滑出） ========== */
         .menu-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.4);
             z-index: 998;
             opacity: 0;
             visibility: hidden;
@@ -98,33 +83,21 @@
         .sidebar {
             position: fixed;
             top: 0;
-            left: -85%;
+            right: -85%;
             width: 85%;
             max-width: 340px;
             height: 100%;
             background: rgba(20,20,35,0.96);
             backdrop-filter: blur(20px);
             z-index: 999;
-            transition: left 0.3s ease;
+            transition: right 0.3s ease;
             display: flex;
             flex-direction: column;
-            box-shadow: 2px 0 20px rgba(0,0,0,0.3);
+            box-shadow: -2px 0 20px rgba(0,0,0,0.3);
         }
 
         .sidebar.open {
-            left: 0;
-        }
-
-        /* 侧边栏滚动条 */
-        .sidebar ::-webkit-scrollbar {
-            width: 3px;
-        }
-        .sidebar ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        .sidebar ::-webkit-scrollbar-thumb {
-            background: rgba(255,255,255,0.2);
-            border-radius: 10px;
+            right: 0;
         }
 
         .sidebar-header {
@@ -348,7 +321,7 @@
             flex: 1;
         }
 
-        /* 聊天区域 - 自定义滚动条 */
+        /* 聊天区域 */
         .chat-box {
             flex: 1;
             overflow-y: auto;
@@ -357,23 +330,6 @@
             flex-direction: column;
             gap: 12px;
             min-height: 0;
-        }
-
-        .chat-box::-webkit-scrollbar {
-            width: 3px;
-        }
-
-        .chat-box::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        .chat-box::-webkit-scrollbar-thumb {
-            background: rgba(255,255,255,0.25);
-            border-radius: 10px;
-        }
-
-        .chat-box::-webkit-scrollbar-thumb:hover {
-            background: rgba(255,255,255,0.45);
         }
 
         .message {
@@ -621,10 +577,10 @@
 <!-- 侧边栏遮罩 -->
 <div class="menu-overlay" id="menuOverlay"></div>
 
-<!-- 侧边栏菜单 -->
+<!-- 侧边栏菜单（右侧滑出） -->
 <div class="sidebar" id="sidebar">
     <div class="sidebar-header">
-        <h3>📋 菜单</h3>
+        <h3>📋 历史对话</h3>
         <button class="close-sidebar" id="closeSidebar">✕</button>
     </div>
 
@@ -634,7 +590,7 @@
 
     <div class="sidebar-section">
         <div class="sidebar-section-title" onclick="toggleSection('historySection')">
-            📂 历史对话 <span class="toggle-icon" id="historyIcon">▼</span>
+            📂 对话记录 <span class="toggle-icon" id="historyIcon">▼</span>
         </div>
         <div class="sidebar-section-content" id="historySection">
             <div class="conversation-list" id="conversationList"></div>
@@ -1275,7 +1231,6 @@
         });
     }
 
-    // 按钮事件
     saveKeyBtn.addEventListener('click', () => {
         let key = apiKeyInput.value.trim();
         if (!key) { showStatus('请输入API Key', true); return; }
@@ -1340,7 +1295,6 @@
     userInput.addEventListener('keypress', (e) => { if (e.key === 'Enter' && !sendBtn.disabled) sendMessage(); });
     newConvoSidebar.addEventListener('click', newConversation);
 
-    // 背景自定义
     const body = document.body;
     function setBackground(type, value) {
         body.classList.remove('custom-bg');
@@ -1387,7 +1341,6 @@
         closeSidebarFunc();
     });
 
-    // 深色模式
     let isDark = false;
     function toggleTheme() {
         isDark = !isDark;
