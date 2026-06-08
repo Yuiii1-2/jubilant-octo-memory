@@ -14,6 +14,32 @@
             box-sizing: border-box;
         }
 
+        /* ========== 全局滚动条样式 - 隐藏粗滑块 ========== */
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255,255,255,0.3) transparent;
+        }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.3);
+            border-radius: 10px;
+            transition: background 0.2s;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255,255,255,0.5);
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
             min-height: 100vh;
@@ -50,7 +76,7 @@
             padding: 12px;
         }
 
-        /* ========== 右侧侧边栏菜单 ========== */
+        /* ========== 侧边栏菜单 ========== */
         .menu-overlay {
             position: fixed;
             top: 0;
@@ -72,21 +98,32 @@
         .sidebar {
             position: fixed;
             top: 0;
-            right: -85%;
+            left: -85%;
             width: 85%;
             max-width: 340px;
             height: 100%;
             background: rgba(20,20,35,0.96);
             backdrop-filter: blur(20px);
             z-index: 999;
-            transition: right 0.3s ease;
+            transition: left 0.3s ease;
             display: flex;
             flex-direction: column;
-            box-shadow: -2px 0 20px rgba(0,0,0,0.3);
+            box-shadow: 2px 0 20px rgba(0,0,0,0.3);
         }
 
         .sidebar.open {
-            right: 0;
+            left: 0;
+        }
+
+        .sidebar ::-webkit-scrollbar {
+            width: 3px;
+        }
+        .sidebar ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .sidebar ::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
         }
 
         .sidebar-header {
@@ -120,7 +157,7 @@
             color: rgba(255,255,255,0.6);
             font-size: 0.7rem;
             letter-spacing: 1px;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -133,7 +170,6 @@
 
         .sidebar-section-content {
             transition: all 0.3s ease;
-            overflow: hidden;
         }
 
         .sidebar-section-content.collapsed {
@@ -153,13 +189,8 @@
         }
 
         .conversation-list {
-            max-height: 200px;
+            max-height: 250px;
             overflow-y: auto;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-        }
-        .conversation-list::-webkit-scrollbar {
-            display: none;
         }
 
         .convo-item {
@@ -187,48 +218,6 @@
             white-space: nowrap;
         }
 
-        /* 表单样式 */
-        .setting-row {
-            margin-bottom: 12px;
-        }
-        .setting-label {
-            color: rgba(255,255,255,0.7);
-            font-size: 12px;
-            margin-bottom: 6px;
-            display: block;
-        }
-        .setting-input {
-            width: 100%;
-            background: rgba(255,255,255,0.15);
-            border: 1px solid rgba(255,255,255,0.3);
-            padding: 10px 14px;
-            border-radius: 40px;
-            font-size: 14px;
-            color: white;
-            outline: none;
-        }
-        .setting-input-group {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-        .color-preview {
-            width: 40px;
-            height: 40px;
-            border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.3);
-            cursor: pointer;
-        }
-        .reset-btn {
-            background: rgba(255,255,255,0.15);
-            border: 1px solid rgba(255,255,255,0.2);
-            padding: 8px 12px;
-            border-radius: 40px;
-            font-size: 11px;
-            color: white;
-            cursor: pointer;
-        }
-
         .api-input-group {
             display: flex;
             flex-direction: column;
@@ -243,6 +232,10 @@
             font-size: 14px;
             color: white;
             outline: none;
+        }
+
+        .api-input-group input::placeholder {
+            color: rgba(255,255,255,0.5);
         }
 
         .api-buttons {
@@ -280,6 +273,15 @@
             font-size: 12px;
             color: white;
             cursor: pointer;
+        }
+
+        .color-picker {
+            width: 44px;
+            height: 36px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.3);
+            cursor: pointer;
+            background: transparent;
         }
 
         .data-buttons {
@@ -345,7 +347,7 @@
             flex: 1;
         }
 
-        /* 聊天区域 - 隐藏滚动条 */
+        /* 聊天区域 - 自定义滚动条 */
         .chat-box {
             flex: 1;
             overflow-y: auto;
@@ -354,11 +356,23 @@
             flex-direction: column;
             gap: 12px;
             min-height: 0;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
         }
+
         .chat-box::-webkit-scrollbar {
-            display: none;
+            width: 3px;
+        }
+
+        .chat-box::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .chat-box::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.25);
+            border-radius: 10px;
+        }
+
+        .chat-box::-webkit-scrollbar-thumb:hover {
+            background: rgba(255,255,255,0.45);
         }
 
         .message {
@@ -392,17 +406,18 @@
             font-size: 15px;
             line-height: 1.45;
             word-wrap: break-word;
+            backdrop-filter: blur(20px);
         }
 
-        /* 用户消息样式变量 */
         .user-message .bubble {
-            background: white;
-            color: #1f2937;
+            background: rgba(102,126,234,0.7);
+            backdrop-filter: blur(20px);
+            color: white;
             border-bottom-right-radius: 4px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.2);
         }
 
-        /* AI消息样式变量 */
         .assistant-message .bubble {
             background: rgba(255,255,255,0.15);
             backdrop-filter: blur(20px);
@@ -411,35 +426,127 @@
             border-bottom-left-radius: 4px;
         }
 
-        /* 表格样式 */
+        /* ========== 表格样式 - 美观简洁 ========== */
         .assistant-message .bubble table {
             width: 100%;
-            border-collapse: collapse;
-            margin: 10px 0;
-            font-size: 12px;
-            border-radius: 10px;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 12px 0;
+            font-size: 13px;
+            border-radius: 12px;
             overflow: hidden;
-            display: block;
-            overflow-x: auto;
+            background: rgba(255,255,255,0.05);
         }
 
         .assistant-message .bubble th,
         .assistant-message .bubble td {
-            padding: 8px 10px;
+            padding: 10px 12px;
             text-align: left;
-            border: 1px solid rgba(255,255,255,0.2);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
         .assistant-message .bubble th {
             background: rgba(102,126,234,0.4);
             font-weight: 600;
+            color: white;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
         }
 
+        .assistant-message .bubble td {
+            background: rgba(255,255,255,0.03);
+        }
+
+        .assistant-message .bubble tr:last-child td {
+            border-bottom: none;
+        }
+
+        .assistant-message .bubble tr:hover td {
+            background: rgba(255,255,255,0.1);
+        }
+
+        /* 列表样式 */
+        .assistant-message .bubble ul,
+        .assistant-message .bubble ol {
+            padding-left: 24px;
+            margin: 8px 0;
+        }
+
+        .assistant-message .bubble li {
+            margin: 4px 0;
+            line-height: 1.45;
+        }
+
+        .assistant-message .bubble ul li::marker {
+            color: rgba(102,126,234,0.8);
+        }
+
+        .assistant-message .bubble ol li::marker {
+            color: rgba(102,126,234,0.8);
+        }
+
+        /* 代码块 */
         .assistant-message .bubble pre {
             background: rgba(0,0,0,0.4);
-            border-radius: 10px;
-            padding: 10px;
+            border-radius: 12px;
+            padding: 12px 14px;
             overflow-x: auto;
+            margin: 10px 0;
+            font-size: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .assistant-message .bubble code {
+            font-family: 'SF Mono', 'Menlo', 'Monaco', 'Cascadia Code', monospace;
+            font-size: 12px;
+            background: rgba(0,0,0,0.3);
+            padding: 2px 6px;
+            border-radius: 6px;
+        }
+
+        .assistant-message .bubble pre code {
+            background: transparent;
+            padding: 0;
+        }
+
+        /* 引用块 */
+        .assistant-message .bubble blockquote {
+            margin: 10px 0;
+            padding: 8px 16px;
+            border-left: 3px solid rgba(102,126,234,0.8);
+            background: rgba(255,255,255,0.05);
+            border-radius: 0 12px 12px 0;
+            font-style: italic;
+        }
+
+        /* 标题样式 */
+        .assistant-message .bubble h1,
+        .assistant-message .bubble h2,
+        .assistant-message .bubble h3 {
+            margin: 12px 0 6px 0;
+            font-weight: 600;
+        }
+
+        .assistant-message .bubble h1 { font-size: 1.4rem; }
+        .assistant-message .bubble h2 { font-size: 1.2rem; }
+        .assistant-message .bubble h3 { font-size: 1.1rem; }
+
+        /* 分割线 */
+        .assistant-message .bubble hr {
+            margin: 12px 0;
+            border: none;
+            height: 1px;
+            background: rgba(255,255,255,0.15);
+        }
+
+        /* 强调文本 */
+        .assistant-message .bubble strong {
+            color: rgba(255,255,255,0.95);
+            font-weight: 600;
+        }
+
+        .assistant-message .bubble em {
+            font-style: italic;
+            color: rgba(255,255,255,0.85);
         }
 
         /* 输入区域 */
@@ -491,6 +598,7 @@
 
         .plus-btn:active {
             transform: scale(0.92);
+            background: rgba(255,255,255,0.25);
         }
 
         .send-btn {
@@ -510,6 +618,7 @@
 
         .send-btn:disabled {
             opacity: 0.5;
+            transform: none;
         }
 
         .status {
@@ -590,20 +699,20 @@
 </head>
 <body>
 
-<!-- 右侧侧边栏菜单 -->
+<!-- 侧边栏遮罩 -->
 <div class="menu-overlay" id="menuOverlay"></div>
+
+<!-- 侧边栏菜单 -->
 <div class="sidebar" id="sidebar">
     <div class="sidebar-header">
         <h3>📋 菜单</h3>
         <button class="close-sidebar" id="closeSidebar">✕</button>
     </div>
 
-    <!-- 新建对话 -->
     <div style="padding: 12px 16px;">
         <button class="new-convo-btn" id="newConvoSidebar">➕ 新建对话</button>
     </div>
 
-    <!-- 历史对话 -->
     <div class="sidebar-section">
         <div class="sidebar-section-title" onclick="toggleSection('historySection')">
             📂 历史对话 <span class="toggle-icon" id="historyIcon">▼</span>
@@ -613,56 +722,11 @@
         </div>
     </div>
 
-    <!-- 气泡样式设置 -->
-    <div class="sidebar-section">
-        <div class="sidebar-section-title" onclick="toggleSection('bubbleSection')">
-            💬 气泡样式 <span class="toggle-icon" id="bubbleIcon">▼</span>
-        </div>
-        <div class="sidebar-section-content collapsed" id="bubbleSection">
-            <!-- 用户气泡设置 -->
-            <div class="setting-row">
-                <div class="setting-label">👤 用户气泡</div>
-                <div class="setting-input-group">
-                    <input type="color" id="userBubbleColor" class="color-preview" value="#ffffff">
-                    <input type="color" id="userTextColor" class="color-preview" value="#1f2937">
-                    <select id="userFontSize" class="setting-input" style="width: auto; flex:1;">
-                        <option value="13">13px</option>
-                        <option value="14">14px</option>
-                        <option value="15" selected>15px</option>
-                        <option value="16">16px</option>
-                        <option value="17">17px</option>
-                        <option value="18">18px</option>
-                    </select>
-                </div>
-            </div>
-            <!-- AI气泡设置 -->
-            <div class="setting-row">
-                <div class="setting-label">🤖 AI气泡</div>
-                <div class="setting-input-group">
-                    <input type="color" id="aiBubbleColor" class="color-preview" value="rgba(255,255,255,0.15)">
-                    <input type="color" id="aiTextColor" class="color-preview" value="#ffffff">
-                    <select id="aiFontSize" class="setting-input" style="width: auto; flex:1;">
-                        <option value="13">13px</option>
-                        <option value="14">14px</option>
-                        <option value="15" selected>15px</option>
-                        <option value="16">16px</option>
-                        <option value="17">17px</option>
-                        <option value="18">18px</option>
-                    </select>
-                </div>
-            </div>
-            <div style="margin-top: 8px;">
-                <button class="reset-btn" id="resetBubbleStyle">🔄 重置气泡样式</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- API 设置 -->
     <div class="sidebar-section">
         <div class="sidebar-section-title" onclick="toggleSection('apiSection')">
             🔑 API 设置 <span class="toggle-icon" id="apiIcon">▼</span>
         </div>
-        <div class="sidebar-section-content collapsed" id="apiSection">
+        <div class="sidebar-section-content" id="apiSection">
             <div class="api-input-group">
                 <input type="password" id="apiKey" placeholder="DeepSeek API Key" autocomplete="off">
                 <div class="api-buttons">
@@ -673,27 +737,25 @@
         </div>
     </div>
 
-    <!-- 背景设置 -->
     <div class="sidebar-section">
         <div class="sidebar-section-title" onclick="toggleSection('bgSection')">
             🎨 背景设置 <span class="toggle-icon" id="bgIcon">▼</span>
         </div>
-        <div class="sidebar-section-content collapsed" id="bgSection">
+        <div class="sidebar-section-content" id="bgSection">
             <div class="bg-controls">
                 <button class="bg-btn" id="bgGradient">🌈 渐变</button>
                 <button class="bg-btn" id="bgUpload">🖼️ 上传图片</button>
                 <button class="bg-btn" id="bgReset">🔄 重置</button>
-                <input type="color" id="bgColor" class="color-preview" value="#667eea">
+                <input type="color" id="bgColor" class="color-picker" value="#667eea">
             </div>
         </div>
     </div>
 
-    <!-- 数据管理 -->
     <div class="sidebar-section">
         <div class="sidebar-section-title" onclick="toggleSection('dataSection')">
             💾 数据管理 <span class="toggle-icon" id="dataIcon">▼</span>
         </div>
-        <div class="sidebar-section-content collapsed" id="dataSection">
+        <div class="sidebar-section-content" id="dataSection">
             <div class="data-buttons">
                 <button class="data-btn" id="exportChatBtn">📤 导出</button>
                 <button class="data-btn" id="importChatBtn">📥 导入</button>
@@ -702,12 +764,11 @@
         </div>
     </div>
 
-    <!-- 深色模式 -->
     <div class="sidebar-section">
         <div class="sidebar-section-title" onclick="toggleSection('themeSection')">
             🌓 深色模式 <span class="toggle-icon" id="themeIcon">▼</span>
         </div>
-        <div class="sidebar-section-content collapsed" id="themeSection">
+        <div class="sidebar-section-content" id="themeSection">
             <div class="data-buttons">
                 <button class="data-btn" id="themeToggle">🌙 切换深色模式</button>
             </div>
@@ -726,7 +787,7 @@
 
     <div class="chat-box" id="chatBox">
         <div class="message assistant-message">
-            <div class="bubble">✨ 欢迎使用 DeepSeek AI！<br>📊 我支持生成表格，对比类问题会自动用表格呈现<br>➕ 点击输入框旁的+号上传文件<br>🔑 点击右上角菜单设置 API Key<br>💬 菜单中可以自定义气泡颜色和字体大小</div>
+            <div class="bubble">✨ 欢迎使用 DeepSeek AI！<br>📊 我支持生成表格，对比类问题会自动用表格呈现<br>➕ 点击输入框旁的+号上传文件<br>🔑 点击左上角菜单设置 API Key</div>
         </div>
     </div>
 
@@ -753,86 +814,6 @@
             content.classList.add('collapsed');
             icon.innerHTML = '▶';
         }
-    }
-
-    // 气泡样式管理
-    function loadBubbleStyles() {
-        const userBg = localStorage.getItem('userBubbleBg') || '#ffffff';
-        const userColor = localStorage.getItem('userBubbleColor') || '#1f2937';
-        const userSize = localStorage.getItem('userFontSize') || '15';
-        const aiBg = localStorage.getItem('aiBubbleBg') || 'rgba(255,255,255,0.15)';
-        const aiColor = localStorage.getItem('aiBubbleColor') || '#ffffff';
-        const aiSize = localStorage.getItem('aiFontSize') || '15';
-        
-        // 应用样式
-        const style = document.createElement('style');
-        style.id = 'bubbleStyles';
-        style.textContent = `
-            .user-message .bubble {
-                background: ${userBg} !important;
-                color: ${userColor} !important;
-                font-size: ${userSize}px !important;
-            }
-            .assistant-message .bubble {
-                background: ${aiBg} !important;
-                color: ${aiColor} !important;
-                font-size: ${aiSize}px !important;
-            }
-        `;
-        const oldStyle = document.getElementById('bubbleStyles');
-        if (oldStyle) oldStyle.remove();
-        document.head.appendChild(style);
-        
-        // 更新选择器值
-        document.getElementById('userBubbleColor').value = rgbToHex(userBg);
-        document.getElementById('userTextColor').value = rgbToHex(userColor);
-        document.getElementById('userFontSize').value = userSize;
-        document.getElementById('aiBubbleColor').value = rgbToHex(aiBg);
-        document.getElementById('aiTextColor').value = rgbToHex(aiColor);
-        document.getElementById('aiFontSize').value = aiSize;
-    }
-    
-    function rgbToHex(rgb) {
-        if (rgb.startsWith('#')) return rgb;
-        if (rgb.startsWith('rgba')) {
-            const match = rgb.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
-            if (match) {
-                return '#' + ((1 << 24) + (parseInt(match[1]) << 16) + (parseInt(match[2]) << 8) + parseInt(match[3])).toString(16).slice(1);
-            }
-        }
-        if (rgb === 'white' || rgb === '#ffffff') return '#ffffff';
-        if (rgb === '#1f2937') return '#1f2937';
-        return '#ffffff';
-    }
-    
-    function saveBubbleStyles() {
-        const userBg = document.getElementById('userBubbleColor').value;
-        const userColor = document.getElementById('userTextColor').value;
-        const userSize = document.getElementById('userFontSize').value;
-        const aiBg = document.getElementById('aiBubbleColor').value;
-        const aiColor = document.getElementById('aiTextColor').value;
-        const aiSize = document.getElementById('aiFontSize').value;
-        
-        localStorage.setItem('userBubbleBg', userBg);
-        localStorage.setItem('userBubbleColor', userColor);
-        localStorage.setItem('userFontSize', userSize);
-        localStorage.setItem('aiBubbleBg', aiBg);
-        localStorage.setItem('aiBubbleColor', aiColor);
-        localStorage.setItem('aiFontSize', aiSize);
-        
-        loadBubbleStyles();
-        showStatus('✅ 气泡样式已更新');
-    }
-    
-    function resetBubbleStyles() {
-        localStorage.setItem('userBubbleBg', '#ffffff');
-        localStorage.setItem('userBubbleColor', '#1f2937');
-        localStorage.setItem('userFontSize', '15');
-        localStorage.setItem('aiBubbleBg', 'rgba(255,255,255,0.15)');
-        localStorage.setItem('aiBubbleColor', '#ffffff');
-        localStorage.setItem('aiFontSize', '15');
-        loadBubbleStyles();
-        showStatus('🔄 气泡样式已重置');
     }
 
     const API_URL = 'https://api.deepseek.com/v1/chat/completions';
@@ -911,15 +892,23 @@
                 body: JSON.stringify({
                     model: 'deepseek-chat',
                     messages: [
-                        { role: 'system', content: '你是一个标题生成助手。根据下面的对话内容，生成一个简短的标题（3-8个字）。只输出标题，不要输出其他任何内容。' },
-                        { role: 'user', content: `对话内容：${textToSummarize}\n\n生成标题：` }
+                        {
+                            role: 'system',
+                            content: '你是一个标题生成助手。根据下面的对话内容，生成一个简短的标题（3-8个字）。只输出标题，不要输出其他任何内容。'
+                        },
+                        {
+                            role: 'user',
+                            content: `对话内容：${textToSummarize}\n\n生成标题：`
+                        }
                     ],
                     stream: false
                 })
             });
+            
             if (response.ok) {
                 const data = await response.json();
-                let newTitle = data.choices[0].message.content.trim().replace(/["'\s]+/g, '').slice(0, 20);
+                let newTitle = data.choices[0].message.content.trim();
+                newTitle = newTitle.replace(/["'\s]+/g, '').slice(0, 20);
                 if (newTitle && newTitle.length > 0) {
                     conversations[currentConversationId].title = newTitle;
                     conversations[currentConversationId].titleGenerated = true;
@@ -994,7 +983,9 @@
             conversations[convoId].titleGenerated = true;
             saveConversations();
             renderConversationList();
-            if (currentConversationId === convoId) updateHeaderTitle();
+            if (currentConversationId === convoId) {
+                updateHeaderTitle();
+            }
             showStatus('已重命名');
         }
     }
@@ -1002,22 +993,50 @@
     function showContextMenu(event, convoId, currentTitle) {
         event.preventDefault();
         event.stopPropagation();
+        
         const isMobile = 'ontouchstart' in window;
+        
         if (isMobile) {
             const action = confirm(`对话: ${currentTitle}\n\n确定要删除这个对话吗？\n(点"取消"可以重命名)`);
-            if (action) deleteConversation(convoId);
-            else {
+            if (action) {
+                deleteConversation(convoId);
+            } else {
                 const newName = prompt('输入新名称:', currentTitle);
-                if (newName && newName.trim()) renameConversation(convoId, newName);
+                if (newName && newName.trim()) {
+                    renameConversation(convoId, newName);
+                }
             }
         } else {
             const menu = document.createElement('div');
-            menu.style.cssText = `position:fixed; top:${event.clientY}px; left:${event.clientX}px; background:rgba(30,30,40,0.95); backdrop-filter:blur(10px); border-radius:12px; padding:8px 0; z-index:10000; box-shadow:0 4px 20px rgba(0,0,0,0.3); min-width:120px;`;
-            menu.innerHTML = `<div style="padding:8px 16px; color:white; cursor:pointer;" id="menuRename">✏️ 重命名</div><div style="padding:8px 16px; color:#ff6b6b; cursor:pointer;" id="menuDelete">🗑️ 删除</div>`;
+            menu.style.cssText = `
+                position: fixed;
+                top: ${event.clientY}px;
+                left: ${event.clientX}px;
+                background: rgba(30,30,40,0.95);
+                backdrop-filter: blur(10px);
+                border-radius: 12px;
+                padding: 8px 0;
+                z-index: 10000;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+                min-width: 120px;
+            `;
+            menu.innerHTML = `
+                <div style="padding: 8px 16px; color: white; cursor: pointer;" id="menuRename">✏️ 重命名</div>
+                <div style="padding: 8px 16px; color: #ff6b6b; cursor: pointer;" id="menuDelete">🗑️ 删除</div>
+            `;
             document.body.appendChild(menu);
-            document.getElementById('menuRename').onclick = () => { const newName = prompt('输入新名称:', currentTitle); if (newName) renameConversation(convoId, newName); menu.remove(); };
-            document.getElementById('menuDelete').onclick = () => { deleteConversation(convoId); menu.remove(); };
-            setTimeout(() => document.addEventListener('click', () => menu.remove(), { once: true }), 100);
+            
+            document.getElementById('menuRename').onclick = () => {
+                const newName = prompt('输入新名称:', currentTitle);
+                if (newName && newName.trim()) renameConversation(convoId, newName);
+                menu.remove();
+            };
+            document.getElementById('menuDelete').onclick = () => {
+                deleteConversation(convoId);
+                menu.remove();
+            };
+            const closeMenu = () => menu.remove();
+            setTimeout(() => document.addEventListener('click', closeMenu, { once: true }), 100);
         }
     }
 
@@ -1028,17 +1047,32 @@
             const div = document.createElement('div');
             div.className = 'convo-item' + (convo.id === currentConversationId ? ' active' : '');
             div.innerHTML = `<span class="convo-title">💬 ${escapeHtml(convo.title)}</span>`;
-            div.addEventListener('click', (e) => { e.stopPropagation(); switchConversation(convo.id); });
+            div.addEventListener('click', (e) => {
+                e.stopPropagation();
+                switchConversation(convo.id);
+            });
             div.addEventListener('contextmenu', (e) => showContextMenu(e, convo.id, convo.title));
             let touchTimer = null;
-            div.addEventListener('touchstart', (e) => { touchTimer = setTimeout(() => showContextMenu(e, convo.id, convo.title), 500); });
-            div.addEventListener('touchend', () => { if (touchTimer) clearTimeout(touchTimer); });
-            div.addEventListener('touchmove', () => { if (touchTimer) clearTimeout(touchTimer); });
+            div.addEventListener('touchstart', (e) => {
+                touchTimer = setTimeout(() => {
+                    showContextMenu(e, convo.id, convo.title);
+                }, 500);
+            });
+            div.addEventListener('touchend', () => {
+                if (touchTimer) clearTimeout(touchTimer);
+            });
+            div.addEventListener('touchmove', () => {
+                if (touchTimer) clearTimeout(touchTimer);
+            });
             conversationList.appendChild(div);
         });
     }
 
-    function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
 
     function renderChatFromHistory() {
         chatBox.innerHTML = '';
@@ -1068,7 +1102,7 @@
         bubble.innerText = content;
         if (filePreview) {
             const span = document.createElement('div');
-            span.style.cssText = 'font-size:10px; opacity:0.6; margin-top:5px; color:#6c757d;';
+            span.style.cssText = 'font-size:10px; opacity:0.7; margin-top:5px;';
             span.innerText = filePreview;
             bubble.appendChild(span);
         }
@@ -1107,7 +1141,11 @@
     }
 
     function updateFileIndicator() {
-        fileIndicator.innerText = pendingFile ? `📎 已添加: ${pendingFile.filename}` : '';
+        if (pendingFile) {
+            fileIndicator.innerText = `📎 已添加: ${pendingFile.filename}`;
+        } else {
+            fileIndicator.innerText = '';
+        }
     }
 
     function showUploadMenu() {
@@ -1116,13 +1154,35 @@
         menu.className = 'popup-menu';
         menu.style.bottom = window.innerHeight - rect.top + 10 + 'px';
         menu.style.left = rect.left + 'px';
-        menu.innerHTML = `<div class="popup-menu-item" data-type="image"><span>🖼️</span> 上传图片</div><div class="popup-menu-item" data-type="file"><span>📄</span> 上传文件</div>`;
+        menu.style.transformOrigin = 'bottom left';
+        menu.innerHTML = `
+            <div class="popup-menu-item" data-type="image">
+                <span class="emoji">🖼️</span> 上传图片
+            </div>
+            <div class="popup-menu-item" data-type="file">
+                <span class="emoji">📄</span> 上传文件
+            </div>
+        `;
+        
         const overlay = document.createElement('div');
         overlay.className = 'popup-overlay';
-        const closeMenu = () => { menu.remove(); overlay.remove(); };
+        
+        const closeMenu = () => {
+            menu.remove();
+            overlay.remove();
+        };
+        
         overlay.onclick = closeMenu;
-        menu.querySelector('[data-type="image"]').onclick = () => { closeMenu(); triggerFileUpload('image'); };
-        menu.querySelector('[data-type="file"]').onclick = () => { closeMenu(); triggerFileUpload('file'); };
+        
+        menu.querySelector('[data-type="image"]').onclick = () => {
+            closeMenu();
+            triggerFileUpload('image');
+        };
+        menu.querySelector('[data-type="file"]').onclick = () => {
+            closeMenu();
+            triggerFileUpload('file');
+        };
+        
         document.body.appendChild(overlay);
         document.body.appendChild(menu);
     }
@@ -1131,21 +1191,31 @@
         if (!apiKey) { showStatus('请先保存API Key', true); return; }
         const input = document.createElement('input');
         input.type = 'file';
-        input.accept = type === 'image' ? 'image/*' : 'image/*,text/plain';
+        if (type === 'image') {
+            input.accept = 'image/*';
+        } else {
+            input.accept = 'image/*,text/plain';
+        }
         input.onchange = async (e) => {
             const file = e.target.files[0];
             if (!file) return;
             if (file.size > 5*1024*1024) { showStatus('文件超过5MB', true); return; }
+            
             const isImage = file.type.startsWith('image/');
             const isText = file.type === 'text/plain' || file.name.endsWith('.txt');
-            if (!isImage && !isText) { showStatus('请上传图片或txt文件', true); return; }
+            
+            if (!isImage && !isText) {
+                showStatus('请上传图片或txt文件', true);
+                return;
+            }
+            
             showStatus(`📂 读取 ${file.name}...`);
             try {
                 if (isImage) {
                     const base64 = await readFileAsBase64(file);
                     pendingFile = { type: 'image', data: base64, filename: file.name };
                     showStatus(`✅ 已添加图片: ${file.name}`);
-                } else {
+                } else if (isText) {
                     const text = await readFileAsText(file);
                     if (text.length > 8000) { showStatus('文本太长，请缩减', true); return; }
                     pendingFile = { type: 'text', content: text, filename: file.name };
@@ -1179,7 +1249,10 @@
         addUserMessageToUI(displayText, filePreview);
         
         const messagesWithSystem = [
-            { role: 'system', content: '你是一个专业的AI助手。当回答涉及对比、分类、数据、步骤、选项等需要清晰呈现的信息时，请优先使用Markdown表格来展示，让用户更直观地理解。表格要有表头和行列对齐。如果问题适合用表格回答，一定要用表格。同时保持回答自然友好。' },
+            {
+                role: 'system',
+                content: '你是一个专业的AI助手。当回答涉及对比、分类、数据、步骤、选项等需要清晰呈现的信息时，请优先使用Markdown表格来展示，让用户更直观地理解。表格要有表头和行列对齐。如果问题适合用表格回答，一定要用表格。同时保持回答自然友好。'
+            },
             ...conversationHistory,
             { role: 'user', content: userContent }
         ];
@@ -1204,7 +1277,11 @@
             const response = await fetch(API_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
-                body: JSON.stringify({ model: 'deepseek-chat', messages: messagesWithSystem, stream: true })
+                body: JSON.stringify({
+                    model: 'deepseek-chat',
+                    messages: messagesWithSystem,
+                    stream: true
+                })
             });
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
             const reader = response.body.getReader();
@@ -1235,13 +1312,16 @@
             }
             conversationHistory.push({ role: 'assistant', content: streamContent });
             saveCurrentConversation();
-            costInfo.innerText = `💰 本次约 ¥${((streamContent.length / 4) * 0.000002).toFixed(6)}`;
+            const estimateCost = ((streamContent.length / 4) * 0.000002).toFixed(6);
+            costInfo.innerText = `💰 本次约 ¥${estimateCost}`;
             pendingFile = null;
             updateFileIndicator();
+            
             if (!conversations[currentConversationId].titleGenerated && userMessage) {
                 await autoGenerateTitle(userMessage, streamContent);
                 renderConversationList();
             }
+            
         } catch (err) {
             currentAssistantMessageDiv.innerText = `❌ 错误: ${err.message}`;
             showStatus(err.message, true);
@@ -1341,15 +1421,6 @@
     userInput.addEventListener('keypress', (e) => { if (e.key === 'Enter' && !sendBtn.disabled) sendMessage(); });
     newConvoSidebar.addEventListener('click', newConversation);
 
-    // 气泡样式事件
-    document.getElementById('userBubbleColor').addEventListener('change', saveBubbleStyles);
-    document.getElementById('userTextColor').addEventListener('change', saveBubbleStyles);
-    document.getElementById('userFontSize').addEventListener('change', saveBubbleStyles);
-    document.getElementById('aiBubbleColor').addEventListener('change', saveBubbleStyles);
-    document.getElementById('aiTextColor').addEventListener('change', saveBubbleStyles);
-    document.getElementById('aiFontSize').addEventListener('change', saveBubbleStyles);
-    document.getElementById('resetBubbleStyle').addEventListener('click', resetBubbleStyles);
-
     // 背景自定义
     const body = document.body;
     function setBackground(type, value) {
@@ -1384,11 +1455,18 @@
         input.accept = 'image/*';
         input.onchange = (e) => {
             const file = e.target.files[0];
-            if (file) { setBackground('image', URL.createObjectURL(file)); closeSidebarFunc(); }
+            if (file) {
+                const url = URL.createObjectURL(file);
+                setBackground('image', url);
+                closeSidebarFunc();
+            }
         };
         input.click();
     });
-    document.getElementById('bgColor').addEventListener('change', (e) => { setBackground('color', e.target.value); closeSidebarFunc(); });
+    document.getElementById('bgColor').addEventListener('change', (e) => {
+        setBackground('color', e.target.value);
+        closeSidebarFunc();
+    });
 
     // 深色模式
     let isDark = false;
@@ -1414,7 +1492,6 @@
             enableChat(false);
         }
         loadBackground();
-        loadBubbleStyles();
         renderChatFromHistory();
         renderConversationList();
         updateHeaderTitle();
