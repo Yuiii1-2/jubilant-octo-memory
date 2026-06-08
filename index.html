@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepSeek Chat</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f0f0f0; height: 100vh; display: flex; flex-direction: column; }
+        
+        .header { background: white; padding: 15px; display: flex; align-items: center; gap: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .header button { padding: 8px 15px; background: #4A90E2; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        
+        .chat-area { flex: 1; overflow-y: auto; padding: 20px; }
+        .message { margin-bottom: 15px; display: flex; gap: 10px; }
+        .message.user { flex-direction: row-reverse; }
+        .message-content { max-width: 70%; padding: 10px 15px; border-radius: 10px; background: white; }
+        .message.user .message-content { background: #4A90E2; color: white; }
+        
+        .input-area { padding: 15px; background: white; display: flex; gap: 10px; }
+        .input-area textarea { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 5px; resize: none; }
+        .input-area button { padding: 10px 20px; background: #4A90E2; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        
+        .sidebar { position: fixed; left: -250px; top: 0; bottom: 0; width: 250px; background: white; transition: 0.3s; padding: 20px; box-shadow: 2px 0 5px rgba(0,0,0,0.1); z-index: 100; }
+        .sidebar.open { left: 0; }
+        .sidebar h3 { margin-bottom: 15px; }
+        .chat-item { padding: 10px; margin-bottom: 5px; background: #f5f5f5; border-radius: 5px; cursor: pointer; display: flex; justify-content: space-between; }
+        .chat-item:hover { background: #e0e0e0; }
+        .chat-item.active { background: #4A90E2; color: white; }
+        
+        .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 1000; }
+        .modal.show { display: flex; }
+        .modal-content { background: white; padding: 30px; border-radius: 10px; width: 90%; max-width: 400px; }
+        .modal-content input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; }
+        
+        .color-options { display: flex; gap: 10px; margin: 10px 0; }
+        .color-btn { width: 30px; height: 30px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; }
+        .color-btn:hover { border-color: #333; }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏 -->
+    <div class="sidebar" id="sidebar">
+        <h3>📋 对话列表</h3>
+        <button style="width:100%; margin-bottom:15px; padding:10px; background:#4A90E2; color:white; border:none; border-radius:5px; cursor:pointer;" onclick="createNewChat()">+ 新对话</button>
+        <div id="chatList"></div>
+        <hr style="margin:20px 0;">
+        <h4>🎨 主题颜色</h4>
+        <div class="color-options">
+            <div class="color-btn" style="background:#4A90E2" onclick="changeTheme('#4A90E2')"></div>
+            <div class="color-btn" style="background:#9B59B6" onclick="changeTheme('#9B59B6')"></div>
+            <div class="color-btn" style="background:#2ECC71" onclick="changeTheme('#2ECC71')"></div>
+            <div class="color-btn" style="background:#E74C3C" onclick="changeTheme('#E74C3C')"></div>
+            <div class="color-btn" style="background:#F39C12" onclick="changeTheme('#F39C12')"></div>
+        </div>
+        <button style="width:100%; margin-top:15px; padding:10px; background:#333; color:white; border:none; border-radius:5px; cursor:pointer;" onclick="showSettings()">⚙️ API设置</button>
+    </div>
+
+    <!-- 主界面 -->
+    <div class="header">
+        <button onclick="toggleSidebar()">☰ 菜单</button>
+        <h3 style="flex:1;" id="currentTitle">DeepSeek Chat</h3>
+        <label style="display:flex; align-items:center; gap:5px; cursor:pointer;">
+            <input type="checkbox" id="webSearch"> 🌐 联网搜索
+        </label>
+        <button onclick="document.getElementById('fileInput').click()">📎 上传文件</button>
+        <input type="file" id="fileInput" style="display:none;" multiple accept="image/*,.txt,.pdf" onchange="handleFiles(this)">
+    </div>
+
+    <div class="chat-area" id="chatArea">
+        <div style="text-align:center; padding:60px 20px; color:#999;">
+            <h1>👋 欢迎使用 DeepSeek</h1>
+            <p>点击左上角菜单开始新对话</p>
+        </div>
+    </div>
+
+    <div class="input-area">
+        <textarea id="messageInput" placeholder="输入消息..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage();}"></textarea>
+        <button onclick="sendMessage()">发送</button>
+    </div>
+
+    <!-- API设置弹窗 -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <h3>⚙️ API设置</h3>
+            <label>API Key:</label>
+            <input type="password" id="apiKeyInput" placeholder="输入你的DeepSeek API Key">
+            <div style="display:flex; gap:10px; margin-top:15px;">
+                <button style="flex:1; padding:10px; background:#4A90E2; color:white; border:none; border-radius:5px; cursor:pointer;" onclick="saveSettings()">保存</button>
+                <button style="flex:1; padding:10px; background:#ddd; border:none; border-radius:5px; cursor:pointer;" onclick="closeSettings()">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== 数据管理 ==========
+        let chats = JSON.parse(localStorage.getItem('chats') || '[]');
+        let currentChatId = null;
+        let apiKey = localStorage.getItem('apiKey') || '';
+        let themeColor = localStorage.getItem('themeColor') || '#4A90E2';
+
+        // 初始化
+        if(apiKey) document.getElementById('apiKeyInput').value = apiKey;
+        changeTheme(themeColor);
+        renderChatList();
+
+        // ========== 对话管理 ==========
+        function createNewChat() {
+            const chat = {
+                id: Date.now().toString(),
+                title: '新对话',
+                messages: []
+            };
+            chats.unshift(chat);
+            saveChats();
+            currentChatId = chat.id;
+            renderChatList();
+            renderMessages();
+            document.getElementById('currentTitle').textContent = '新对话';
+        }
+
+        function loadChat(id) {
+            currentChatId = id;
+            const chat = chats.find(c => c.id === id);
+            if(chat) {
+                document.getElementById('currentTitle').textContent = chat.title;
+                renderMessages();
+                renderChatList();
+            }
+        }
+
+        function deleteChat(id, event) {
+            event.stopPropagation();
+            if(confirm('确定删除这个对话吗？')) {
+                chats = chats.filter(c => c.id !== id);
+                if(currentChatId === id) {
+                    currentChatId = chats.length > 0 ? chats[0].id : null;
+                }
+                saveChats();
+                renderChatList();
+                renderMessages();
+            }
+        }
+
+        function saveChats() {
+            localStorage.setItem('chats', JSON.stringify(chats));
+        }
+
+        // ========== 消息发送 ==========
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const content = input.value.trim();
+            if(!content) return;
+            
+            if(!apiKey) {
+                alert('请先设置API Key！');
+                showSettings();
+                return;
+            }
+
+            if(!currentChatId) createNewChat();
+            
+            const chat = chats.find(c => c.id === currentChatId);
+            if(!chat) return;
+
+            // 添加用户消息
+            chat.messages.push({ role: 'user', content });
+            if(chat.messages.length === 1) {
+                chat.title = content.substring(0, 20) + (content.length > 20 ? '...' : '');
+            }
+            input.value = '';
+            saveChats();
+            renderMessages();
+            renderChatList();
+
+            // 显示加载
+            const chatArea = document.getElementById('chatArea');
+            const loadingDiv = document.createElement('div');
+            loadingDiv.innerHTML = '<div class="message"><div class="message-content">思考中...</div></div>';
+            chatArea.appendChild(loadingDiv);
+            chatArea.scrollTop = chatArea.scrollHeight;
+
+            try {
+                const useWebSearch = document.getElementById('webSearch').checked;
+                const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: 'deepseek-chat',
+                        messages: chat.messages.map(m => ({ role: m.role, content: m.content })),
+                        tools: useWebSearch ? [{ type: 'web_search', web_search: { enable: true } }] : undefined
+                    })
+                });
+
+                const data = await response.json();
+                if(!response.ok) throw new Error(data.error?.message || '请求失败');
+                
+                chat.messages.push({ role: 'assistant', content: data.choices[0].message.content });
+                saveChats();
+                renderMessages();
+            } catch(error) {
+                chat.messages.push({ role: 'assistant', content: '❌ 错误：' + error.message });
+                saveChats();
+                renderMessages();
+            }
+        }
+
+        // ========== 文件处理 ==========
+        function handleFiles(input) {
+            const files = input.files;
+            if(files.length === 0) return;
+            
+            if(!currentChatId) createNewChat();
+            const chat = chats.find(c => c.id === currentChatId);
+            
+            Array.from(files).forEach(file => {
+                if(file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        chat.messages.push({ 
+                            role: 'user', 
+                            content: `[上传图片：${file.name}]`,
+                            image: e.target.result 
+                        });
+                        saveChats();
+                        renderMessages();
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        chat.messages.push({ 
+                            role: 'user', 
+                            content: `[文件：${file.name}]\n${e.target.result}` 
+                        });
+                        saveChats();
+                        renderMessages();
+                    };
+                    reader.readAsText(file);
+                }
+            });
+            input.value = '';
+        }
+
+        // ========== 界面渲染 ==========
+        function renderMessages() {
+            const chatArea = document.getElementById('chatArea');
+            const chat = chats.find(c => c.id === currentChatId);
+            
+            if(!chat || chat.messages.length === 0) {
+                chatArea.innerHTML = '<div style="text-align:center; padding:60px 20px; color:#999;"><h1>👋 欢迎使用 DeepSeek</h1><p>开始发送消息吧</p></div>';
+                return;
+            }
+
+            chatArea.innerHTML = chat.messages.map(m => `
+                <div class="message ${m.role}">
+                    <div class="message-content">
+                        ${m.image ? `<img src="${m.image}" style="max-width:200px; border-radius:5px;"><br>` : ''}
+                        ${m.content.replace(/\n/g, '<br>')}
+                    </div>
+                </div>
+            `).join('');
+            
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+
+        function renderChatList() {
+            const list = document.getElementById('chatList');
+            list.innerHTML = chats.map(c => `
+                <div class="chat-item ${c.id === currentChatId ? 'active' : ''}" onclick="loadChat('${c.id}')">
+                    <span style="flex:1;">${c.title}</span>
+                    <span onclick="deleteChat('${c.id}', event)" style="cursor:pointer;">×</span>
+                </div>
+            `).join('');
+        }
+
+        // ========== UI功能 ==========
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        function changeTheme(color) {
+            themeColor = color;
+            localStorage.setItem('themeColor', color);
+            document.querySelectorAll('button').forEach(btn => {
+                if(btn.style.background === '') btn.style.background = color;
+            });
+            const style = document.createElement('style');
+            style.textContent = `
+                .message.user .message-content { background: ${color} !important; }
+                .chat-item.active { background: ${color} !important; }
+            `;
+            document.head.appendChild(style);
+        }
+
+        function showSettings() {
+            document.getElementById('settingsModal').classList.add('show');
+            document.getElementById('apiKeyInput').value = apiKey;
+        }
+
+        function closeSettings() {
+            document.getElementById('settingsModal').classList.remove('show');
+        }
+
+        function saveSettings() {
+            apiKey = document.getElementById('apiKeyInput').value.trim();
+            if(!apiKey) {
+                alert('请输入API Key');
+                return;
+            }
+            localStorage.setItem('apiKey', apiKey);
+            closeSettings();
+            alert('设置已保存！');
+        }
+    </script>
+</body>
+</html>
