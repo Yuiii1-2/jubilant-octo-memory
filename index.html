@@ -14,7 +14,7 @@
             box-sizing: border-box;
         }
 
-        /* ========== 全局滚动条样式 - 隐藏粗滑块 ========== */
+        /* ========== 全局滚动条样式 ========== */
         * {
             scrollbar-width: thin;
             scrollbar-color: rgba(255,255,255,0.3) transparent;
@@ -302,6 +302,58 @@
             text-align: center;
         }
 
+        /* 文字样式设置 */
+        .font-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .font-size-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            justify-content: space-between;
+        }
+        .font-size-btn {
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-size: 13px;
+            color: white;
+            cursor: pointer;
+        }
+        .font-size-btn.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+        }
+        .color-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .preset-color {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        .preset-color.active {
+            border-color: white;
+            transform: scale(1.1);
+        }
+        .custom-color-input {
+            width: 44px;
+            height: 36px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.3);
+            cursor: pointer;
+            background: transparent;
+        }
+
         /* 主界面头部 */
         .header {
             display: flex;
@@ -347,14 +399,14 @@
             flex: 1;
         }
 
-        /* 聊天区域 - 自定义滚动条 */
+        /* 聊天区域 */
         .chat-box {
             flex: 1;
             overflow-y: auto;
             padding: 8px 4px 12px 4px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 16px;
             min-height: 0;
         }
 
@@ -369,10 +421,6 @@
         .chat-box::-webkit-scrollbar-thumb {
             background: rgba(255,255,255,0.25);
             border-radius: 10px;
-        }
-
-        .chat-box::-webkit-scrollbar-thumb:hover {
-            background: rgba(255,255,255,0.45);
         }
 
         .message {
@@ -399,117 +447,120 @@
             justify-content: flex-start;
         }
 
-        .bubble {
+        /* AI消息 - 无气泡框，直接显示文本 */
+        .assistant-message .assistant-content {
+            max-width: 100%;
+            padding: 0;
+            font-size: var(--font-size, 16px);
+            color: var(--text-color, #ffffff);
+            line-height: 1.5;
+        }
+
+        /* 用户气泡框 */
+        .user-message .bubble {
             max-width: 85%;
             padding: 10px 16px;
             border-radius: 22px;
-            font-size: 15px;
-            line-height: 1.45;
-            word-wrap: break-word;
-            backdrop-filter: blur(20px);
-        }
-
-        .user-message .bubble {
+            font-size: var(--font-size, 16px);
+            color: var(--user-text-color, #ffffff);
             background: rgba(102,126,234,0.7);
             backdrop-filter: blur(20px);
-            color: white;
             border-bottom-right-radius: 4px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.2);
             border: 1px solid rgba(255,255,255,0.2);
+            word-wrap: break-word;
+            line-height: 1.45;
         }
 
-        .assistant-message .bubble {
-            background: rgba(255,255,255,0.15);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,255,255,0.2);
-            color: white;
-            border-bottom-left-radius: 4px;
+        /* AI内部样式 */
+        .assistant-content {
+            width: 100%;
         }
 
-        /* ========== 表格样式 - 美观简洁 ========== */
-        .assistant-message .bubble table {
+        /* 表格样式 */
+        .assistant-content table {
             width: 100%;
             border-collapse: separate;
             border-spacing: 0;
             margin: 12px 0;
-            font-size: 13px;
+            font-size: calc(var(--font-size, 16px) * 0.85);
             border-radius: 12px;
             overflow: hidden;
             background: rgba(255,255,255,0.05);
         }
 
-        .assistant-message .bubble th,
-        .assistant-message .bubble td {
+        .assistant-content th,
+        .assistant-content td {
             padding: 10px 12px;
             text-align: left;
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
-        .assistant-message .bubble th {
+        .assistant-content th {
             background: rgba(102,126,234,0.4);
             font-weight: 600;
             color: white;
             border-bottom: 1px solid rgba(255,255,255,0.2);
         }
 
-        .assistant-message .bubble td {
+        .assistant-content td {
             background: rgba(255,255,255,0.03);
         }
 
-        .assistant-message .bubble tr:last-child td {
+        .assistant-content tr:last-child td {
             border-bottom: none;
         }
 
-        .assistant-message .bubble tr:hover td {
+        .assistant-content tr:hover td {
             background: rgba(255,255,255,0.1);
         }
 
         /* 列表样式 */
-        .assistant-message .bubble ul,
-        .assistant-message .bubble ol {
+        .assistant-content ul,
+        .assistant-content ol {
             padding-left: 24px;
             margin: 8px 0;
         }
 
-        .assistant-message .bubble li {
+        .assistant-content li {
             margin: 4px 0;
             line-height: 1.45;
         }
 
-        .assistant-message .bubble ul li::marker {
+        .assistant-content ul li::marker {
             color: rgba(102,126,234,0.8);
         }
 
-        .assistant-message .bubble ol li::marker {
+        .assistant-content ol li::marker {
             color: rgba(102,126,234,0.8);
         }
 
         /* 代码块 */
-        .assistant-message .bubble pre {
+        .assistant-content pre {
             background: rgba(0,0,0,0.4);
             border-radius: 12px;
             padding: 12px 14px;
             overflow-x: auto;
             margin: 10px 0;
-            font-size: 12px;
+            font-size: calc(var(--font-size, 16px) * 0.85);
             border: 1px solid rgba(255,255,255,0.1);
         }
 
-        .assistant-message .bubble code {
+        .assistant-content code {
             font-family: 'SF Mono', 'Menlo', 'Monaco', 'Cascadia Code', monospace;
-            font-size: 12px;
+            font-size: calc(var(--font-size, 16px) * 0.85);
             background: rgba(0,0,0,0.3);
             padding: 2px 6px;
             border-radius: 6px;
         }
 
-        .assistant-message .bubble pre code {
+        .assistant-content pre code {
             background: transparent;
             padding: 0;
         }
 
         /* 引用块 */
-        .assistant-message .bubble blockquote {
+        .assistant-content blockquote {
             margin: 10px 0;
             padding: 8px 16px;
             border-left: 3px solid rgba(102,126,234,0.8);
@@ -519,34 +570,36 @@
         }
 
         /* 标题样式 */
-        .assistant-message .bubble h1,
-        .assistant-message .bubble h2,
-        .assistant-message .bubble h3 {
+        .assistant-content h1,
+        .assistant-content h2,
+        .assistant-content h3 {
             margin: 12px 0 6px 0;
             font-weight: 600;
         }
 
-        .assistant-message .bubble h1 { font-size: 1.4rem; }
-        .assistant-message .bubble h2 { font-size: 1.2rem; }
-        .assistant-message .bubble h3 { font-size: 1.1rem; }
+        .assistant-content h1 { font-size: calc(var(--font-size, 16px) * 1.3); }
+        .assistant-content h2 { font-size: calc(var(--font-size, 16px) * 1.15); }
+        .assistant-content h3 { font-size: calc(var(--font-size, 16px) * 1.05); }
 
-        /* 分割线 */
-        .assistant-message .bubble hr {
+        .assistant-content hr {
             margin: 12px 0;
             border: none;
             height: 1px;
             background: rgba(255,255,255,0.15);
         }
 
-        /* 强调文本 */
-        .assistant-message .bubble strong {
+        .assistant-content strong {
             color: rgba(255,255,255,0.95);
             font-weight: 600;
         }
 
-        .assistant-message .bubble em {
+        .assistant-content em {
             font-style: italic;
             color: rgba(255,255,255,0.85);
+        }
+
+        .assistant-content p {
+            margin: 8px 0;
         }
 
         /* 输入区域 */
@@ -738,6 +791,41 @@
     </div>
 
     <div class="sidebar-section">
+        <div class="sidebar-section-title" onclick="toggleSection('fontSection')">
+            🔤 文字样式 <span class="toggle-icon" id="fontIcon">▼</span>
+        </div>
+        <div class="sidebar-section-content" id="fontSection">
+            <div class="font-controls">
+                <div class="font-size-row">
+                    <span style="color:white; font-size:12px;">文字大小</span>
+                    <div>
+                        <button class="font-size-btn" data-size="14">小</button>
+                        <button class="font-size-btn active" data-size="16">中</button>
+                        <button class="font-size-btn" data-size="18">大</button>
+                    </div>
+                </div>
+                <div class="color-row">
+                    <span style="color:white; font-size:12px;">AI文字颜色</span>
+                    <div class="preset-color" style="background:#ffffff;" data-color="#ffffff"></div>
+                    <div class="preset-color" style="background:#f0f0f0;" data-color="#f0f0f0"></div>
+                    <div class="preset-color" style="background:#d4e6f1;" data-color="#d4e6f1"></div>
+                    <div class="preset-color" style="background:#fdebd0;" data-color="#fdebd0"></div>
+                    <input type="color" id="textColorPicker" class="custom-color-input" value="#ffffff">
+                </div>
+                <div class="color-row">
+                    <span style="color:white; font-size:12px;">用户气泡颜色</span>
+                    <div class="preset-color" style="background:#667eea;" data-user-color="#667eea"></div>
+                    <div class="preset-color" style="background:#34c759;" data-user-color="#34c759"></div>
+                    <div class="preset-color" style="background:#ff9500;" data-user-color="#ff9500"></div>
+                    <div class="preset-color" style="background:#ff3b30;" data-user-color="#ff3b30"></div>
+                    <div class="preset-color" style="background:#af52de;" data-user-color="#af52de"></div>
+                    <input type="color" id="userColorPicker" class="custom-color-input" value="#667eea">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sidebar-section">
         <div class="sidebar-section-title" onclick="toggleSection('bgSection')">
             🎨 背景设置 <span class="toggle-icon" id="bgIcon">▼</span>
         </div>
@@ -787,7 +875,7 @@
 
     <div class="chat-box" id="chatBox">
         <div class="message assistant-message">
-            <div class="bubble">✨ 欢迎使用 DeepSeek AI！<br>📊 我支持生成表格，对比类问题会自动用表格呈现<br>➕ 点击输入框旁的+号上传文件<br>🔑 点击左上角菜单设置 API Key</div>
+            <div class="assistant-content">✨ 欢迎使用 DeepSeek AI！<br>📊 我支持生成表格，对比类问题会自动用表格呈现<br>➕ 点击输入框旁的+号上传文件<br>🔑 点击左上角菜单设置 API Key<br>🎨 菜单中可调节文字大小和颜色</div>
         </div>
     </div>
 
@@ -858,6 +946,127 @@
     const newConvoSidebar = document.getElementById('newConvoSidebar');
     const plusBtn = document.getElementById('plusBtn');
     const chatTitle = document.getElementById('chatTitle');
+
+    // 文字样式相关元素
+    const fontSizeBtns = document.querySelectorAll('.font-size-btn');
+    const presetColors = document.querySelectorAll('.preset-color[data-color]');
+    const presetUserColors = document.querySelectorAll('.preset-color[data-user-color]');
+    const textColorPicker = document.getElementById('textColorPicker');
+    const userColorPicker = document.getElementById('userColorPicker');
+
+    // 文字样式存储
+    let currentFontSize = localStorage.getItem('font_size') || '16';
+    let currentTextColor = localStorage.getItem('text_color') || '#ffffff';
+    let currentUserColor = localStorage.getItem('user_color') || '#667eea';
+
+    // 应用文字样式
+    function applyFontStyles() {
+        document.documentElement.style.setProperty('--font-size', currentFontSize + 'px');
+        document.documentElement.style.setProperty('--text-color', currentTextColor);
+        document.documentElement.style.setProperty('--user-text-color', '#ffffff'); // 用户文字固定白色
+        // 用户气泡背景色
+        const userBubbles = document.querySelectorAll('.user-message .bubble');
+        userBubbles.forEach(bubble => {
+            bubble.style.background = `rgba(${hexToRgb(currentUserColor)}, 0.7)`;
+        });
+        // 更新AI文字颜色
+        const assistantContents = document.querySelectorAll('.assistant-content');
+        assistantContents.forEach(content => {
+            content.style.color = currentTextColor;
+        });
+    }
+
+    function hexToRgb(hex) {
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : '102,126,234';
+    }
+
+    // 更新新消息的用户气泡颜色
+    function updateNewUserBubbleColor(bubble) {
+        if (bubble) {
+            bubble.style.background = `rgba(${hexToRgb(currentUserColor)}, 0.7)`;
+        }
+    }
+
+    // 保存文字样式
+    function saveFontSettings() {
+        localStorage.setItem('font_size', currentFontSize);
+        localStorage.setItem('text_color', currentTextColor);
+        localStorage.setItem('user_color', currentUserColor);
+    }
+
+    // 更新UI上的激活状态
+    function updateFontUI() {
+        fontSizeBtns.forEach(btn => {
+            if (btn.dataset.size === currentFontSize) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+        presetColors.forEach(btn => {
+            if (btn.dataset.color === currentTextColor) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+        presetUserColors.forEach(btn => {
+            if (btn.dataset.userColor === currentUserColor) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+        textColorPicker.value = currentTextColor;
+        userColorPicker.value = currentUserColor;
+    }
+
+    // 文字大小事件
+    fontSizeBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            currentFontSize = btn.dataset.size;
+            saveFontSettings();
+            applyFontStyles();
+            updateFontUI();
+        });
+    });
+
+    // AI文字颜色预设
+    presetColors.forEach(btn => {
+        btn.addEventListener('click', () => {
+            currentTextColor = btn.dataset.color;
+            saveFontSettings();
+            applyFontStyles();
+            updateFontUI();
+        });
+    });
+
+    // 用户气泡颜色预设
+    presetUserColors.forEach(btn => {
+        btn.addEventListener('click', () => {
+            currentUserColor = btn.dataset.userColor;
+            saveFontSettings();
+            applyFontStyles();
+            updateFontUI();
+        });
+    });
+
+    // 自定义AI颜色
+    textColorPicker.addEventListener('change', (e) => {
+        currentTextColor = e.target.value;
+        saveFontSettings();
+        applyFontStyles();
+        updateFontUI();
+    });
+
+    // 自定义用户颜色
+    userColorPicker.addEventListener('change', (e) => {
+        currentUserColor = e.target.value;
+        saveFontSettings();
+        applyFontStyles();
+        updateFontUI();
+    });
 
     function openSidebarFunc() { sidebar.classList.add('open'); menuOverlay.classList.add('open'); }
     function closeSidebarFunc() { sidebar.classList.remove('open'); menuOverlay.classList.remove('open'); }
@@ -1079,7 +1288,7 @@
         if (!conversationHistory || conversationHistory.length === 0) {
             const welcomeDiv = document.createElement('div');
             welcomeDiv.className = 'message assistant-message';
-            welcomeDiv.innerHTML = '<div class="bubble">✨ 新对话开始啦！发送消息吧～</div>';
+            welcomeDiv.innerHTML = '<div class="assistant-content">✨ 新对话开始啦！发送消息吧～</div>';
             chatBox.appendChild(welcomeDiv);
             return;
         }
@@ -1100,6 +1309,9 @@
         const bubble = document.createElement('div');
         bubble.className = 'bubble';
         bubble.innerText = content;
+        bubble.style.background = `rgba(${hexToRgb(currentUserColor)}, 0.7)`;
+        bubble.style.fontSize = currentFontSize + 'px';
+        bubble.style.color = '#ffffff';
         if (filePreview) {
             const span = document.createElement('div');
             span.style.cssText = 'font-size:10px; opacity:0.7; margin-top:5px;';
@@ -1114,11 +1326,13 @@
     function addAssistantMessageToUI(content) {
         const messageDiv = document.createElement('div');
         messageDiv.className = 'message assistant-message';
-        const bubble = document.createElement('div');
-        bubble.className = 'bubble';
-        bubble.innerHTML = marked.parse(content);
-        bubble.querySelectorAll('pre code').forEach(block => hljs.highlightElement(block));
-        messageDiv.appendChild(bubble);
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'assistant-content';
+        contentDiv.innerHTML = marked.parse(content);
+        contentDiv.style.fontSize = currentFontSize + 'px';
+        contentDiv.style.color = currentTextColor;
+        contentDiv.querySelectorAll('pre code').forEach(block => hljs.highlightElement(block));
+        messageDiv.appendChild(contentDiv);
         chatBox.appendChild(messageDiv);
         chatBox.scrollTop = chatBox.scrollHeight;
     }
@@ -1262,12 +1476,12 @@
 
         const assistantDiv = document.createElement('div');
         assistantDiv.className = 'message assistant-message';
-        const bubble = document.createElement('div');
-        bubble.className = 'bubble';
-        assistantDiv.appendChild(bubble);
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'assistant-content';
+        assistantDiv.appendChild(contentDiv);
         chatBox.appendChild(assistantDiv);
         chatBox.scrollTop = chatBox.scrollHeight;
-        currentAssistantMessageDiv = bubble;
+        currentAssistantMessageDiv = contentDiv;
         streamContent = '';
 
         sendBtn.disabled = true;
@@ -1303,6 +1517,8 @@
                             if (delta) {
                                 streamContent += delta;
                                 currentAssistantMessageDiv.innerHTML = marked.parse(streamContent);
+                                currentAssistantMessageDiv.style.fontSize = currentFontSize + 'px';
+                                currentAssistantMessageDiv.style.color = currentTextColor;
                                 currentAssistantMessageDiv.querySelectorAll('pre code').forEach(block => hljs.highlightElement(block));
                                 chatBox.scrollTop = chatBox.scrollHeight;
                             }
@@ -1495,6 +1711,8 @@
         renderChatFromHistory();
         renderConversationList();
         updateHeaderTitle();
+        applyFontStyles();
+        updateFontUI();
     }
     init();
 </script>
