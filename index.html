@@ -12,6 +12,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         /* ========== 彻底隐藏滚动条 ========== */
@@ -25,15 +26,24 @@
             height: 0;
         }
 
+        /* ========== 禁止页面滚动/滑动乱动 ========== */
+        html, body {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            overscroll-behavior: none;
+            -webkit-overflow-scrolling: touch;
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
-            min-height: 100vh;
-            padding: 0;
-            position: relative;
-            transition: background 0.3s ease;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%);
             background-size: 400% 400%;
             animation: gradientShift 15s ease infinite;
+            transition: background 0.3s ease;
         }
 
         @keyframes gradientShift {
@@ -53,12 +63,13 @@
             max-width: 800px;
             margin: 0 auto;
             width: 100%;
-            height: 100vh;
+            height: 100%;
             display: flex;
             flex-direction: column;
             position: relative;
             z-index: 1;
             padding: 12px;
+            overflow: hidden;
         }
 
         /* ========== 侧边栏菜单 ========== */
@@ -383,7 +394,7 @@
             flex: 1;
         }
 
-        /* 聊天区域 - 无滚动条 */
+        /* 聊天区域 */
         .chat-box {
             flex: 1;
             overflow-y: auto;
@@ -392,6 +403,7 @@
             flex-direction: column;
             gap: 16px;
             min-height: 0;
+            -webkit-overflow-scrolling: touch;
         }
 
         .message {
@@ -441,7 +453,7 @@
             width: 100%;
         }
 
-        /* 表格样式 - 美观简洁 */
+        /* 表格样式 */
         .assistant-content table {
             width: 100%;
             border-collapse: separate;
@@ -719,20 +731,22 @@
         <button class="new-convo-btn" id="newConvoSidebar">➕ 新建对话</button>
     </div>
 
+    <!-- 历史对话 - 默认折叠 -->
     <div class="sidebar-section">
         <div class="sidebar-section-title" onclick="toggleSection('historySection')">
-            📂 历史对话 <span class="toggle-icon" id="historyIcon">▼</span>
+            📂 历史对话 <span class="toggle-icon" id="historyIcon">▶</span>
         </div>
-        <div class="sidebar-section-content" id="historySection">
+        <div class="sidebar-section-content collapsed" id="historySection">
             <div class="conversation-list" id="conversationList"></div>
         </div>
     </div>
 
+    <!-- API 设置 - 默认折叠 -->
     <div class="sidebar-section">
         <div class="sidebar-section-title" onclick="toggleSection('apiSection')">
-            🔑 API 设置 <span class="toggle-icon" id="apiIcon">▼</span>
+            🔑 API 设置 <span class="toggle-icon" id="apiIcon">▶</span>
         </div>
-        <div class="sidebar-section-content" id="apiSection">
+        <div class="sidebar-section-content collapsed" id="apiSection">
             <div class="api-input-group">
                 <input type="password" id="apiKey" placeholder="DeepSeek API Key" autocomplete="off">
                 <div class="api-buttons">
@@ -743,11 +757,12 @@
         </div>
     </div>
 
+    <!-- 文字样式 - 默认折叠 -->
     <div class="sidebar-section">
         <div class="sidebar-section-title" onclick="toggleSection('fontSection')">
-            🔤 文字样式 <span class="toggle-icon" id="fontIcon">▼</span>
+            🔤 文字样式 <span class="toggle-icon" id="fontIcon">▶</span>
         </div>
-        <div class="sidebar-section-content" id="fontSection">
+        <div class="sidebar-section-content collapsed" id="fontSection">
             <div class="font-controls">
                 <div class="font-size-row">
                     <span>📏 文字大小</span>
@@ -778,11 +793,12 @@
         </div>
     </div>
 
+    <!-- 背景设置 - 默认折叠 -->
     <div class="sidebar-section">
         <div class="sidebar-section-title" onclick="toggleSection('bgSection')">
-            🎨 背景设置 <span class="toggle-icon" id="bgIcon">▼</span>
+            🎨 背景设置 <span class="toggle-icon" id="bgIcon">▶</span>
         </div>
-        <div class="sidebar-section-content" id="bgSection">
+        <div class="sidebar-section-content collapsed" id="bgSection">
             <div class="bg-controls">
                 <button class="bg-btn" id="bgGradient">🌈 渐变</button>
                 <button class="bg-btn" id="bgUpload">🖼️ 上传图片</button>
@@ -792,11 +808,12 @@
         </div>
     </div>
 
+    <!-- 数据管理 - 默认折叠 -->
     <div class="sidebar-section">
         <div class="sidebar-section-title" onclick="toggleSection('dataSection')">
-            💾 数据管理 <span class="toggle-icon" id="dataIcon">▼</span>
+            💾 数据管理 <span class="toggle-icon" id="dataIcon">▶</span>
         </div>
-        <div class="sidebar-section-content" id="dataSection">
+        <div class="sidebar-section-content collapsed" id="dataSection">
             <div class="data-buttons">
                 <button class="data-btn" id="exportChatBtn">📤 导出</button>
                 <button class="data-btn" id="importChatBtn">📥 导入</button>
@@ -805,11 +822,12 @@
         </div>
     </div>
 
+    <!-- 深色模式 - 默认折叠 -->
     <div class="sidebar-section">
         <div class="sidebar-section-title" onclick="toggleSection('themeSection')">
-            🌓 深色模式 <span class="toggle-icon" id="themeIcon">▼</span>
+            🌓 深色模式 <span class="toggle-icon" id="themeIcon">▶</span>
         </div>
-        <div class="sidebar-section-content" id="themeSection">
+        <div class="sidebar-section-content collapsed" id="themeSection">
             <div class="data-buttons">
                 <button class="data-btn" id="themeToggle">🌙 切换深色模式</button>
             </div>
@@ -845,6 +863,7 @@
 </div>
 
 <script>
+    // 侧边栏折叠功能（默认全部折叠，点击展开）
     function toggleSection(sectionId) {
         const content = document.getElementById(sectionId);
         const icon = document.getElementById(sectionId + 'Icon');
@@ -1135,18 +1154,38 @@
             return;
         }
         conversationHistory.forEach(msg => {
-            if (msg.role === 'user') addUserMessageToUI(typeof msg.content === 'string' ? msg.content : '📎 [文件]');
-            else if (msg.role === 'assistant') addAssistantMessageToUI(msg.content);
+            if (msg.role === 'user') {
+                // 获取用户消息的实际内容
+                let userText = '';
+                if (typeof msg.content === 'string') {
+                    userText = msg.content;
+                } else if (Array.isArray(msg.content)) {
+                    // 多模态内容，提取文本部分
+                    const textPart = msg.content.find(c => c.type === 'text');
+                    userText = textPart ? textPart.text : '[文件]';
+                }
+                addUserMessageToUI(userText || '');
+            } else if (msg.role === 'assistant') {
+                addAssistantMessageToUI(msg.content);
+            }
         });
     }
 
     function addUserMessageToUI(content, filePreview = '') {
         const div = document.createElement('div'); div.className = 'message user-message';
         const bubble = document.createElement('div'); bubble.className = 'bubble';
-        bubble.innerText = content;
+        // 确保显示用户实际输入的内容，不是占位符
+        const displayContent = content || (filePreview ? `📎 ${filePreview}` : '');
+        bubble.innerText = displayContent;
         bubble.style.fontSize = currentFontSize + 'px';
         bubble.style.background = `rgba(${hexToRgb(currentUserColor)}, 0.7)`;
-        if (filePreview) { let s = document.createElement('div'); s.style.cssText = 'font-size:10px; opacity:0.7; margin-top:5px;'; s.innerText = filePreview; bubble.appendChild(s); }
+        if (filePreview && !content) {
+            // 如果只有文件没有文字，在气泡内显示文件信息
+            const span = document.createElement('div');
+            span.style.cssText = 'font-size:10px; opacity:0.7; margin-top:5px;';
+            span.innerText = filePreview;
+            bubble.appendChild(span);
+        }
         div.appendChild(bubble);
         chatBox.appendChild(div);
         chatBox.scrollTop = chatBox.scrollHeight;
@@ -1231,19 +1270,27 @@
     async function callDeepSeekStream(userMessage) {
         if (!apiKey) { showStatus('请先设置API Key', true); return; }
         let userContent = [];
-        if (userMessage.trim()) userContent.push({ type: 'text', text: userMessage });
+        let userText = userMessage.trim();
         let filePreview = '';
+        
+        if (userText) {
+            userContent.push({ type: 'text', text: userText });
+        }
         if (pendingFile) {
             if (pendingFile.type === 'image') {
                 userContent.push({ type: 'image_url', image_url: { url: pendingFile.data } });
                 filePreview = `📷 图片: ${pendingFile.filename}`;
             } else {
-                userContent.push({ type: 'text', text: `【文件: ${pendingFile.filename}】\n${pendingFile.content}\n【结束】` });
+                userContent.push({ type: 'text', text: `【文件内容: ${pendingFile.filename}】\n${pendingFile.content}\n【文件结束】` });
                 filePreview = `📄 文本: ${pendingFile.filename}`;
             }
         }
         if (!userContent.length) { showStatus('请输入消息或上传文件', true); return; }
-        addUserMessageToUI(userMessage.trim() || '📎 [文件]', filePreview);
+        
+        // 显示用户消息：优先显示用户输入的文字，如果没有文字则显示文件信息
+        const displayText = userText || (pendingFile ? `📎 ${pendingFile.filename}` : '');
+        addUserMessageToUI(displayText, userText ? filePreview : '');
+        
         const messagesWithSystem = [{ role: 'system', content: '你是专业AI助手。涉及对比、分类、数据时优先用Markdown表格，让用户直观理解。' }, ...conversationHistory, { role: 'user', content: userContent }];
         conversationHistory.push({ role: 'user', content: userContent });
         saveCurrentConversation();
@@ -1296,7 +1343,7 @@
             saveCurrentConversation();
             costInfo.innerText = `💰 本次约 ¥${((streamContent.length / 4) * 0.000002).toFixed(6)}`;
             pendingFile = null; updateFileIndicator();
-            if (!conversations[currentConversationId].titleGenerated && userMessage) await autoGenerateTitle(userMessage, streamContent);
+            if (!conversations[currentConversationId].titleGenerated && userText) await autoGenerateTitle(userText, streamContent);
         } catch (err) {
             currentAssistantMessageDiv.innerText = `❌ 错误: ${err.message}`;
             showStatus(err.message, true);
